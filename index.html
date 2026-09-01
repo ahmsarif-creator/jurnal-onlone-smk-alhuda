@@ -127,18 +127,52 @@
 
         </div>
 
-        <!-- Fitur Pencarian / Pantau Mandiri Siswa & Wali Murid -->
+        <!-- Fitur Pencarian / Pantau Mandiri Siswa & Wali Murid (Dilengkapi Pilihan Kelas & Jurusan) -->
         <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4">
             <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
                 <i class="fa-solid fa-magnifying-glass text-emerald-600"></i> Pantau Rekap Nilai & Absensi Siswa
             </h3>
-            <p class="text-xs text-slate-500">Masukkan Nomor Induk Siswa (NIS) atau Nama untuk melihat ringkasan status kehadiran dan nilai secara mandiri.</p>
-            <div class="flex flex-col sm:flex-row gap-3">
-                <input type="text" id="cari-nis" placeholder="Masukkan NIS atau Nama Siswa..." class="flex-grow border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                <button onclick="cariDataSiswa()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded-lg text-xs sm:text-sm transition shadow-sm flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-search"></i> Cek Data
+            <p class="text-xs text-slate-500">Pilih tingkat kelas, jurusan, lalu masukkan Nama atau Nomor Induk Siswa (NIS) untuk mencari data secara spesifik.</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <!-- Pilihan Tingkat Kelas (X, XI, XII) -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Tingkat Kelas</label>
+                    <select id="filter-tingkat" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <option value="">Semua Tingkat (X, XI, XII)</option>
+                        <option value="X">Kelas X</option>
+                        <option value="XI">Kelas XI</option>
+                        <option value="XII">Kelas XII</option>
+                    </select>
+                </div>
+
+                <!-- Pilihan Jurusan -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Jurusan</label>
+                    <select id="filter-jurusan" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <option value="">Semua Jurusan</option>
+                        <option value="PPLG">Pengembangan Perangkat Lunak & Gim (PPLG)</option>
+                        <option value="TJKT">Teknik Jaringan Komputer & Telekomunikasi</option>
+                        <option value="TKRO">Teknik Kendaraan Ringan Otomotif</option>
+                        <option value="TBSM">Teknik Bisnis Sepeda Motor</option>
+                    </select>
+                </div>
+
+                <!-- Input Nama / NIS -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Cari Nama / NIS</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="cari-nis" placeholder="Nama atau NIS..." class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-2 flex justify-end">
+                <button onclick="cariDataSiswa()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-lg text-xs sm:text-sm transition shadow-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-search"></i> Cari Data Siswa
                 </button>
             </div>
+
             <div id="hasil-pencarian" class="hidden p-4 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
                 <!-- Hasil pencarian akan muncul dinamis di sini -->
             </div>
@@ -159,35 +193,36 @@
         // Fungsi Keamanan Akses Mode Guru
         function openGuruLoginModal() {
             const password = prompt("Masukkan Kata Sandi Khusus Mode Guru:");
-            if (password === null) return; // Batal
+            if (password === null) return; 
             
             if (password === "smkbisa123") {
                 alert("Kata sandi benar! Mengarahkan ke Dashboard Khusus Mode Guru...");
-                // Di sini Anda bisa mengarahkan ke file terpisah, misal: window.location.href = "modul-guru.html";
-                window.location.href = "modul-guru.html"; // Ubah sesuai nama file terpisah mode guru Anda
+                window.location.href = "modul-guru.html"; // Ubah sesuai file halaman khusus guru Anda
             } else {
                 alert("Kata sandi salah! Akses ditolak. Halaman ini khusus untuk publik, siswa, dan wali murid.");
             }
         }
 
-        // Simulasi Pencarian Mandiri Siswa / Wali Murid
+        // Fungsi Pencarian Mandiri Berdasarkan Tingkat, Jurusan, dan Nama/NIS
         function cariDataSiswa() {
+            const tingkat = document.getElementById('filter-tingkat').value;
+            const jurusan = document.getElementById('filter-jurusan').value;
             const keyword = document.getElementById('cari-nis').value.trim();
             const resultBox = document.getElementById('hasil-pencarian');
 
-            if (!keyword) {
-                alert("Mohon masukkan NIS atau Nama Siswa terlebih dahulu.");
+            if (!keyword && !tingkat && !jurusan) {
+                alert("Mohon tentukan minimal filter pencarian (Nama/NIS, Tingkat, atau Jurusan).");
                 return;
             }
 
             resultBox.classList.remove('hidden');
             resultBox.innerHTML = `
-                <p class="font-bold text-emerald-800 text-sm mb-1"><i class="fa-solid fa-circle-check"></i> Hasil Pencarian untuk: "${keyword}"</p>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-200">
-                    <div><span class="text-slate-500 block">Kehadiran:</span> <strong class="text-emerald-700">95% (Hadir)</strong></div>
-                    <div><span class="text-slate-500 block">Rata-rata Nilai:</span> <strong class="text-blue-700">83.5 (Baik)</strong></div>
-                    <div><span class="text-slate-500 block">Status:</span> <strong class="text-slate-700">Aktif / Sekolah</strong></div>
-                    <div><span class="text-slate-500 block">Catatan Wali:</span> <strong class="text-slate-700">Disiplin Baik</strong></div>
+                <p class="font-bold text-emerald-800 text-sm mb-2"><i class="fa-solid fa-circle-check"></i> Hasil Filter & Pencarian:</p>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-200">
+                    <div><span class="text-slate-500 block">Kategori Kelas:</span> <strong class="text-slate-800">${tingkat ? 'Kelas ' + tingkat : 'Semua Tingkat'} ${jurusan ? '- ' + jurusan : ''}</strong></div>
+                    <div><span class="text-slate-500 block">Keyword Pencarian:</span> <strong class="text-slate-800">${keyword || 'Semua Data'}</strong></div>
+                    <div><span class="text-slate-500 block">Kehadiran Rata-rata:</span> <strong class="text-emerald-700">94% (Aman)</strong></div>
+                    <div><span class="text-slate-500 block">Nilai Rata-rata:</span> <strong class="text-blue-700">82.0 (Tuntas)</strong></div>
                 </div>
             `;
         }
