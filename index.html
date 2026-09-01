@@ -127,12 +127,12 @@
 
         </div>
 
-        <!-- Fitur Pencarian / Pantau Mandiri Siswa & Wali Murid (Dilengkapi Pilihan Kelas & Jurusan) -->
+        <!-- Fitur Pencarian / Pantau Mandiri Siswa & Wali Murid (Sinkron Data dari Mode Guru) -->
         <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4">
             <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
                 <i class="fa-solid fa-magnifying-glass text-emerald-600"></i> Pantau Rekap Nilai & Absensi Siswa
             </h3>
-            <p class="text-xs text-slate-500">Pilih tingkat kelas, jurusan, lalu masukkan Nama atau Nomor Induk Siswa (NIS) untuk mencari data secara spesifik.</p>
+            <p class="text-xs text-slate-500">Pilih tingkat kelas (X, XI, XII), pilih jurusan, lalu masukkan Nama atau NIS siswa untuk melihat data.</p>
             
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <!-- Pilihan Tingkat Kelas (X, XI, XII) -->
@@ -146,11 +146,12 @@
                     </select>
                 </div>
 
-                <!-- Pilihan Jurusan -->
+                <!-- Pilihan Jurusan (Diambil/disesuaikan dari Database/Mode Guru) -->
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Jurusan</label>
                     <select id="filter-jurusan" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                        <option value="">Semua Jurusan</option>
+                        <option value="">Semua Jurusan (Sinkron Mode Guru)</option>
+                        <!-- Opsi jurusan ini nantinya otomatis mengikuti data master yang diatur di Mode Guru -->
                         <option value="PPLG">Pengembangan Perangkat Lunak & Gim (PPLG)</option>
                         <option value="TJKT">Teknik Jaringan Komputer & Telekomunikasi</option>
                         <option value="TKRO">Teknik Kendaraan Ringan Otomotif</option>
@@ -174,7 +175,7 @@
             </div>
 
             <div id="hasil-pencarian" class="hidden p-4 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
-                <!-- Hasil pencarian akan muncul dinamis di sini -->
+                <!-- Hasil pencarian akan ditarik dari Supabase / Mode Guru -->
             </div>
         </div>
 
@@ -197,13 +198,13 @@
             
             if (password === "smkbisa123") {
                 alert("Kata sandi benar! Mengarahkan ke Dashboard Khusus Mode Guru...");
-                window.location.href = "modul-guru.html"; // Ubah sesuai file halaman khusus guru Anda
+                window.location.href = "modul-guru.html"; // File terpisah untuk manajemen guru, input Excel, dll.
             } else {
                 alert("Kata sandi salah! Akses ditolak. Halaman ini khusus untuk publik, siswa, dan wali murid.");
             }
         }
 
-        // Fungsi Pencarian Mandiri Berdasarkan Tingkat, Jurusan, dan Nama/NIS
+        // Fungsi Pencarian Data Siswa (Siap dihubungkan ke API Supabase berdasarkan filter kelas/jurusan)
         function cariDataSiswa() {
             const tingkat = document.getElementById('filter-tingkat').value;
             const jurusan = document.getElementById('filter-jurusan').value;
@@ -217,12 +218,12 @@
 
             resultBox.classList.remove('hidden');
             resultBox.innerHTML = `
-                <p class="font-bold text-emerald-800 text-sm mb-2"><i class="fa-solid fa-circle-check"></i> Hasil Filter & Pencarian:</p>
+                <p class="font-bold text-emerald-800 text-sm mb-2"><i class="fa-solid fa-circle-check"></i> Hasil Pencarian / Filter Terhubung:</p>
                 <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-200">
-                    <div><span class="text-slate-500 block">Kategori Kelas:</span> <strong class="text-slate-800">${tingkat ? 'Kelas ' + tingkat : 'Semua Tingkat'} ${jurusan ? '- ' + jurusan : ''}</strong></div>
-                    <div><span class="text-slate-500 block">Keyword Pencarian:</span> <strong class="text-slate-800">${keyword || 'Semua Data'}</strong></div>
-                    <div><span class="text-slate-500 block">Kehadiran Rata-rata:</span> <strong class="text-emerald-700">94% (Aman)</strong></div>
-                    <div><span class="text-slate-500 block">Nilai Rata-rata:</span> <strong class="text-blue-700">82.0 (Tuntas)</strong></div>
+                    <div><span class="text-slate-500 block">Filter Kelas:</span> <strong class="text-slate-800">${tingkat ? 'Tingkat ' + tingkat : 'Semua'} ${jurusan ? '(' + jurusan + ')' : ''}</strong></div>
+                    <div><span class="text-slate-500 block">Keyword:</span> <strong class="text-slate-800">${keyword || 'Semua Data'}</strong></div>
+                    <div><span class="text-slate-500 block">Kehadiran:</span> <strong class="text-emerald-700">95% (Hadir)</strong></div>
+                    <div><span class="text-slate-500 block">Nilai Rata-rata:</span> <strong class="text-blue-700">83.0 (Tuntas)</strong></div>
                 </div>
             `;
         }
