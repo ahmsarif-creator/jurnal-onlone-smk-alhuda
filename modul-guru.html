@@ -37,7 +37,7 @@
             <div class="space-y-1">
                 <span class="bg-emerald-700 text-emerald-100 text-[10px] font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Sistem Akademik Terpadu</span>
                 <h2 class="text-xl md:text-2xl font-bold pt-1">Portal Manajemen Pengajar & Absensi Siswa</h2>
-                <p class="text-emerald-100 text-xs md:text-sm">Kelola pendaftaran akun guru, atur data master kelas/jurusan, unggah database siswa via Excel, dan akses login pengajar.</p>
+                <p class="text-emerald-100 text-xs md:text-sm">Kelola pendaftaran akun guru, unggah database siswa via Excel (menjadi basis pilihan kelas dinamis), dan akses login pengajar.</p>
             </div>
             <div class="bg-emerald-950/60 p-4 rounded-xl border border-emerald-700/60 text-xs space-y-1.5 min-w-[220px] shadow-inner">
                 <div class="text-emerald-300 font-semibold border-b border-emerald-800 pb-1">Status Sistem:</div>
@@ -87,7 +87,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-slate-800 text-sm sm:text-base">Registrasi Akun Guru Baru</h3>
-                            <p class="text-[11px] text-slate-500">Pendaftaran pengajar baru dengan pengaturan tugas wali kelas.</p>
+                            <p class="text-[11px] text-slate-500">Pendaftaran pengajar baru dengan pilihan kelas dari data master.</p>
                         </div>
                     </div>
 
@@ -115,15 +115,7 @@
                                 <label class="block text-xs font-semibold text-slate-600 mb-1">Wali Kelas (Opsional)</label>
                                 <select id="reg-wali-kelas" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
                                     <option value="">-- Bukan Wali Kelas --</option>
-                                    <option value="X-PPLG">X - PPLG</option>
-                                    <option value="XI-PPLG">XI - PPLG</option>
-                                    <option value="XII-PPLG">XII - PPLG</option>
-                                    <option value="X-TJKT">X - TJKT</option>
-                                    <option value="XI-TJKT">XI - TJKT</option>
-                                    <option value="XII-TJKT">XII - TJKT</option>
-                                    <option value="X-TKRO">X - TKRO</option>
-                                    <option value="XI-TKRO">XI - TKRO</option>
-                                    <option value="XII-TKRO">XII - TKRO</option>
+                                    <!-- Opsi kelas akan terisi otomatis dari database -->
                                 </select>
                             </div>
                         </div>
@@ -146,7 +138,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-slate-800 text-sm sm:text-base">Upload Master Data Siswa (Excel)</h3>
-                            <p class="text-[11px] text-slate-500">Unggah daftar nama & NIS siswa untuk absensi per kelas/jurusan.</p>
+                            <p class="text-[11px] text-slate-500">Unggah daftar nama & NIS siswa. Menjadi basis pilihan kelas & jurusan.</p>
                         </div>
                     </div>
                     
@@ -205,7 +197,7 @@
                             <th class="p-3">NIP / ID (Login)</th>
                             <th class="p-3">Pengampu Mapel</th>
                             <th class="p-3">Wali Kelas</th>
-                            <th class="p-3">Aksi</th>
+                            <th class="p-3">Status</th>
                         </tr>
                     </thead>
                     <tbody id="tabel-guru-body">
@@ -231,7 +223,41 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             muatDataGuru();
+            muatPilihanKelasDinamis();
         });
+
+        // Mengambil daftar kelas unik dari database (presensi) untuk pilihan Wali Kelas & Index HTML
+        async function muatPilihanKelasDinamis() {
+            try {
+                const response = await fetch(SUPABASE_URL + "presensi?select=kelas", {
+                    method: "GET",
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization": "Bearer " + SUPABASE_KEY
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    // Ambil daftar kelas unik
+                    const kelasSet = [...new Set(data.map(item => item.kelas))].filter(Boolean);
+                    
+                    const selectWali = document.getElementById('reg-wali-kelas');
+                    selectWali.innerHTML = `<option value="">-- Bukan Wali Kelas --</option>`;
+
+                    if (kelasSet.length > 0) {
+                        kelasSet.sort().forEach(cls => {
+                            selectWali.innerHTML += `<option value="${cls}">${cls}</option>`;
+                        });
+                        
+                        // Sinkronisasi otomatis ke localStorage agar index.html dapat membaca daftar jurusan/kelas dinamis ini
+                        localStorage.setItem('daftar_kelas_tersedia', JSON.stringify(kelasSet));
+                    }
+                }
+            } catch (error) {
+                console.error("Gagal memuat kelas dinamis:", error);
+            }
+        }
 
         // Pendaftaran Akun Guru Baru
         async function buatAkunGuruBaru() {
@@ -304,7 +330,6 @@
 
                     const guru = data[0];
                     if (guru.password === passInput) {
-                        // Simpan sesi login ke localStorage agar halaman jurnal-guru.html dapat membaca identitas guru
                         localStorage.setItem('session_guru', JSON.stringify(guru));
                         alert(`Login Berhasil! Selamat datang, ${guru.nama}.`);
                         window.location.href = "jurnal-guru.html";
@@ -350,7 +375,7 @@
                                 <td class="p-3 text-slate-600">${guru.nip}</td>
                                 <td class="p-3 text-slate-600">${guru.tugas || '-'}</td>
                                 <td class="p-3"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded font-medium">${guru.wali_kelas || 'Bukan Wali Kelas'}</span></td>
-                                <td class="p-3 text-slate-500 font-mono text-[11px]">Terdaftar</td>
+                                <td class="p-3 text-emerald-600 font-semibold text-[11px]">Aktif</td>
                             </tr>
                         `;
                     });
@@ -395,7 +420,6 @@
                         return;
                     }
 
-                    // Mapping hanya mengambil kolom nama dan nis, serta menyertakan kelas gabungan
                     const payloadData = jsonResult.map(row => ({
                         nis: String(row.nis || row.NIS || row.Nis || "-"),
                         nama: String(row.nama || row.Nama || "Tanpa Nama"),
@@ -415,9 +439,10 @@
                     });
 
                     if (response.ok) {
-                        alert(`Sukses! ${payloadData.length} data siswa kelas ${kelasGabung} berhasil diunggah ke database.`);
+                        alert(`Sukses! ${payloadData.length} data siswa kelas ${kelasGabung} berhasil diunggah.`);
                         document.getElementById('file-excel-siswa').value = '';
                         document.getElementById('target-jurusan').value = '';
+                        muatPilihanKelasDinamis(); // Segarkan pilihan kelas secara realtime
                     } else {
                         const err = await response.json();
                         alert("Gagal mengunggah ke Supabase: " + (err.message || response.statusText));
