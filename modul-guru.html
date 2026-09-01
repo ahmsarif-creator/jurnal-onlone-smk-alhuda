@@ -223,7 +223,7 @@ CREATE TABLE IF NOT EXISTS presensi (
             }
         }
 
-        // Unggah Presensi via Excel (Sejalur Diakses Semua Guru)
+        // Unggah Presensi via Excel & Kirim ke Supabase Secara Otomatis
         function prosesUploadPresensiExcel() {
             const targetKelas = document.getElementById('target-kelas-presensi').value;
             const fileInput = document.getElementById('file-excel-presensi');
@@ -240,7 +240,7 @@ CREATE TABLE IF NOT EXISTS presensi (
             const file = fileInput.files[0];
             const reader = new FileReader();
 
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
@@ -253,11 +253,38 @@ CREATE TABLE IF NOT EXISTS presensi (
                         return;
                     }
 
-                    alert(`Berhasil membaca ${jsonResult.length} baris data presensi untuk kelas ${targetKelas}. Data siap disinkronkan ke Supabase!`);
-                    // Di sini data siap di-loop dan dikirim via fetch POST ke endpoint Supabase tabel 'presensi'
+                    // Mapping data dari Excel agar sesuai dengan kolom tabel Supabase
+                    const payloadData = jsonResult.map(row => ({
+                        nis: String(row.nis || row.NIS || row.Nis || "-"),
+                        nama: String(row.nama || row.Nama || "Tanpa Nama"),
+                        kelas: targetKelas,
+                        status: String(row.status || row.Status || "Hadir")
+                    }));
+
+                    // Kirim data secara massal ke Supabase
+                    const response = await fetch(SUPABASE_URL + "presensi", {
+                        method: "POST",
+                        headers: {
+                            "apikey": SUPABASE_KEY,
+                            "Authorization": "Bearer " + SUPABASE_KEY,
+                            "Content-Type": "application/json",
+                            "Prefer": "return=minimal"
+                        },
+                        body: JSON.stringify(payloadData)
+                    });
+
+                    if (response.ok) {
+                        alert(`Sukses! ${payloadData.length} data presensi kelas ${targetKelas} berhasil diunggah ke Supabase.`);
+                        document.getElementById('file-excel-presensi').value = '';
+                        document.getElementById('target-kelas-presensi').value = '';
+                    } else {
+                        const err = await response.json();
+                        alert("Gagal mengunggah ke Supabase: " + (err.message || response.statusText));
+                    }
+
                 } catch (err) {
                     console.error(err);
-                    alert("Gagal membaca berkas Excel. Pastikan format tabel sesuai.");
+                    alert("Terjadi kesalahan saat memproses berkas Excel atau koneksi database.");
                 }
             };
             reader.readAsArrayBuffer(file);
