@@ -37,7 +37,7 @@
             <div class="space-y-1">
                 <span class="bg-emerald-700 text-emerald-100 text-[10px] font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Sistem Akademik Terpadu</span>
                 <h2 class="text-xl md:text-2xl font-bold pt-1">Portal Manajemen Pengajar & Absensi Siswa</h2>
-                <p class="text-emerald-100 text-xs md:text-sm">Kelola pendaftaran akun guru, unggah database siswa via Excel (menjadi basis pilihan kelas dinamis), dan akses login pengajar.</p>
+                <p class="text-emerald-100 text-xs md:text-sm">Kelola pendaftaran akun guru (terverifikasi admin), unggah database siswa via Excel, dan akses login pengajar.</p>
             </div>
             <div class="bg-emerald-950/60 p-4 rounded-xl border border-emerald-700/60 text-xs space-y-1.5 min-w-[220px] shadow-inner">
                 <div class="text-emerald-300 font-semibold border-b border-emerald-800 pb-1">Status Sistem:</div>
@@ -78,7 +78,7 @@
         <!-- Grid Menu Utama (Pendaftaran & Upload Absensi) -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            <!-- Modul A: Pendaftaran Akun Guru Baru -->
+            <!-- Modul A: Pendaftaran Akun Guru Baru (Dengan Verifikasi Admin) -->
             <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4 flex flex-col justify-between">
                 <div>
                     <div class="flex items-center gap-3 border-b border-slate-100 pb-3 mb-4">
@@ -87,7 +87,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-slate-800 text-sm sm:text-base">Registrasi Akun Guru Baru</h3>
-                            <p class="text-[11px] text-slate-500">Pendaftaran pengajar baru dengan pilihan kelas dari data master.</p>
+                            <p class="text-[11px] text-slate-500">Pendaftaran pengajar baru membutuhkan kode verifikasi admin.</p>
                         </div>
                     </div>
 
@@ -118,6 +118,15 @@
                                     <!-- Opsi kelas akan terisi otomatis dari database -->
                                 </select>
                             </div>
+                        </div>
+
+                        <!-- Kotak Konfirmasi Admin -->
+                        <div class="bg-amber-50 border border-amber-200 p-3.5 rounded-xl space-y-2 mt-2">
+                            <label class="block text-xs font-bold text-amber-900 flex items-center gap-1.5">
+                                <i class="fa-solid fa-shield-halved text-amber-600"></i> Kode Verifikasi Admin (Password Admin)
+                            </label>
+                            <input type="password" id="reg-admin-password" placeholder="Masukkan password admin (adminsmk123)" class="w-full border border-amber-300 rounded-lg p-2 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            <p class="text-[10px] text-amber-700">Wajib diisi oleh admin sekolah untuk mengonfirmasi pembuatan akun guru baru.</p>
                         </div>
                     </div>
                 </div>
@@ -239,7 +248,6 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    // Ambil daftar kelas unik
                     const kelasSet = [...new Set(data.map(item => item.kelas))].filter(Boolean);
                     
                     const selectWali = document.getElementById('reg-wali-kelas');
@@ -259,16 +267,24 @@
             }
         }
 
-        // Pendaftaran Akun Guru Baru
+        // Pendaftaran Akun Guru Baru (Dilengkapi Verifikasi Password Admin)
         async function buatAkunGuruBaru() {
             const nama = document.getElementById('reg-nama-guru').value.trim();
             const nip = document.getElementById('reg-nip-guru').value.trim();
             const password = document.getElementById('reg-password-guru').value.trim();
             const tugas = document.getElementById('reg-tugas-guru').value.trim();
             const wali_kelas = document.getElementById('reg-wali-kelas').value;
+            const adminPasswordInput = document.getElementById('reg-admin-password').value.trim();
 
+            // Validasi Input Wajib
             if (!nama || !nip || !password) {
                 alert("Nama lengkap, NIP/ID, dan Password wajib diisi!");
+                return;
+            }
+
+            // Validasi Kode Verifikasi Admin
+            if (adminPasswordInput !== "adminsmk123") {
+                alert("Kode Verifikasi Admin salah! Masukkan password admin yang benar (adminsmk123) untuk mengonfirmasi pembuatan akun.");
                 return;
             }
 
@@ -285,12 +301,13 @@
                 });
 
                 if (response.ok) {
-                    alert(`Berhasil! Akun guru "${nama}" berhasil didaftarkan.`);
+                    alert(`Berhasil! Akun guru "${nama}" telah dikonfirmasi admin dan berhasil didaftarkan.`);
                     document.getElementById('reg-nama-guru').value = '';
                     document.getElementById('reg-nip-guru').value = '';
                     document.getElementById('reg-password-guru').value = '';
                     document.getElementById('reg-tugas-guru').value = '';
                     document.getElementById('reg-wali-kelas').value = '';
+                    document.getElementById('reg-admin-password').value = '';
                     muatDataGuru();
                 } else {
                     const err = await response.json();
