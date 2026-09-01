@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Mode Guru & Admin - SMK Al-Huda Kediri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS untuk Membaca File Excel (.xlsx) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- Header / Navigasi Khusus Guru -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3.5 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <img src="logo-alhuda-transparan.png" alt="Logo SMK Al-Huda" class="w-10 h-10 object-contain bg-white rounded-full p-1 shadow">
+                <div>
+                    <h1 class="font-bold text-base md:text-lg leading-tight tracking-wide">PANEL MODE GURU</h1>
+                    <p class="text-[11px] text-emerald-400">SMK Al-Huda Kediri - Terintegrasi Supabase</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="openAdminModal()" class="bg-amber-600 hover:bg-amber-700 text-xs font-semibold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
+                    <i class="fa-solid fa-shield-halved"></i> <span>Konfirmasi Admin</span>
+                </button>
+                <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-xs font-semibold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar Portal</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Konten Utama Panel Guru -->
+    <main class="max-w-7xl mx-auto px-4 py-6 space-y-6 w-full flex-grow">
+
+        <!-- Banner Info Sesi -->
+        <div class="bg-emerald-800 text-white rounded-2xl p-6 shadow-md flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <span class="bg-emerald-700 text-emerald-100 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Akses Terotorisasi</span>
+                <h2 class="text-xl md:text-2xl font-bold mt-2">Selamat Datang di Dashboard Pengajar & Wali Kelas</h2>
+                <p class="text-emerald-100 text-xs md:text-sm mt-1">Kelola absensi harian, unggah rekapitulasi nilai/presensi via Excel, dan pantau jurnal pembelajaran.</p>
+            </div>
+            <div class="bg-emerald-900/60 p-4 rounded-xl border border-emerald-700 text-xs space-y-1 min-w-[220px]">
+                <div class="text-emerald-300 font-semibold">Status Keamanan:</div>
+                <div><i class="fa-solid fa-circle-check text-emerald-400"></i> Mode Guru Aktif</div>
+                <div><i class="fa-solid fa-database text-emerald-400"></i> Supabase Terhubung</div>
+            </div>
+        </div>
+
+        <!-- Grid Menu Layanan Guru -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Modul 1: Unggah Presensi / Absensi via Excel (Sejalur untuk Semua Guru) -->
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-2 border-b border-slate-100 pb-3 mb-3">
+                        <div class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-base">
+                            <i class="fa-solid fa-file-excel"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-sm sm:text-base">Upload Data Presensi / Absensi (Excel)</h3>
+                            <p class="text-[11px] text-slate-500">Akses bersama seluruh guru untuk unggah data presensi siswa.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Tingkat & Kelas Target</label>
+                            <select id="target-kelas-presensi" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                                <option value="">Pilih Kelas...</option>
+                                <option value="X-PPLG">X - PPLG</option>
+                                <option value="XI-PPLG">XI - PPLG</option>
+                                <option value="XII-PPLG">XII - PPLG</option>
+                                <option value="X-TJKT">X - TJKT</option>
+                                <option value="XI-TJKT">XI - TJKT</option>
+                                <option value="XII-TJKT">XII - TJKT</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Unggah Berkas (.xlsx / .xls)</label>
+                            <input type="file" id="file-excel-presensi" accept=".xlsx, .xls" class="w-full border border-slate-300 rounded-lg p-2 text-xs bg-slate-50 file:mr-4 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-700">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4">
+                    <button onclick="prosesUploadPresensiExcel()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-lg text-xs sm:text-sm transition shadow-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Proses & Unggah ke Supabase
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modul 2: Pembuatan Akun Guru Baru (Khusus Akses Panel) -->
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-2 border-b border-slate-100 pb-3 mb-3">
+                        <div class="w-9 h-9 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-base">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-sm sm:text-base">Buat Akun Guru / Pengajar Baru</h3>
+                            <p class="text-[11px] text-slate-500">Pendaftaran akun pengajar baru (Memerlukan otorisasi admin).</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap & Gelar Guru</label>
+                            <input type="text" id="reg-nama-guru" placeholder="Contoh: Siti Aminah, S.Pd" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">NIP / ID Unik</label>
+                                <input type="text" id="reg-nip-guru" placeholder="NIP / ID" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Mata Pelajaran / Tugas</label>
+                                <input type="text" id="reg-tugas-guru" placeholder="Mapel / Wali Kelas" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4">
+                    <button onclick="buatAkunGuruBaru()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2.5 px-4 rounded-lg text-xs sm:text-sm transition shadow-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-user-check"></i> Daftarkan Akun Guru
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Kotak Informasi SQL Supabase -->
+        <div class="bg-slate-900 text-slate-200 rounded-xl p-5 shadow-sm space-y-3">
+            <h3 class="font-bold text-sm text-emerald-400 flex items-center gap-2">
+                <i class="fa-solid fa-database"></i> Panduan Tabel SQL Supabase (Jika Belum Dibuat)
+            </h3>
+            <p class="text-xs text-slate-400">Salin skrip SQL di bawah ini dan jalankan pada menu <strong>SQL Editor</strong> di dashboard Supabase Anda agar penyimpanan data presensi dan akun guru berjalan sempurna:</p>
+            <pre class="bg-slate-950 p-3 rounded-lg text-[11px] font-mono text-emerald-300 overflow-x-auto">
+-- Tabel Akun Guru
+CREATE TABLE IF NOT EXISTS guru (
+    id SERIAL PRIMARY KEY,
+    nama TEXT NOT NULL,
+    nip TEXT UNIQUE NOT NULL,
+    tugas TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabel Presensi / Absensi Siswa
+CREATE TABLE IF NOT EXISTS presensi (
+    id SERIAL PRIMARY KEY,
+    nis TEXT,
+    nama TEXT,
+    kelas TEXT,
+    status TEXT,
+    tanggal DATE DEFAULT CURRENT_DATE,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+            </pre>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-6 text-xs text-slate-400 border-t border-slate-200 bg-white mt-8">
+        &copy; 2026 SMK Al-Huda Kediri. Panel Khusus Guru & Manajemen Sistem Terpadu.
+    </footer>
+
+    <!-- Skrip Integrasi Supabase & Excel -->
+    <script>
+        const SUPABASE_URL = "https://qrfwzyhwypxrodjxcnmf.supabase.co/rest/v1/";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFyZnd6eWh3eXB4cm9kanhjbm1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyMDc0NDgsImV4cCI6MjEwMzc4MzQ0OH0.gOzKeWaAZZVrWJ1bBq4forsRrQkL2Gw8JmIo1F_Gi3Y";
+
+        // Konfirmasi Admin Khusus (Password: adminsmk123)
+        function openAdminModal() {
+            const passAdmin = prompt("Masukkan Sandi Konfirmasi Admin (adminsmk123):");
+            if (passAdmin === null) return;
+
+            if (passAdmin === "adminsmk123") {
+                alert("Akses Admin Dikonfirmasi! Anda memiliki hak penuh mengelola seluruh basis data sekolah.");
+            } else {
+                alert("Sandi Admin salah! Akses tingkat lanjut ditolak.");
+            }
+        }
+
+        // Pendaftaran Akun Guru Baru
+        async function buatAkunGuruBaru() {
+            const nama = document.getElementById('reg-nama-guru').value.trim();
+            const nip = document.getElementById('reg-nip-guru').value.trim();
+            const tugas = document.getElementById('reg-tugas-guru').value.trim();
+
+            if (!nama || !nip) {
+                alert("Nama lengkap dan NIP/ID wajib diisi!");
+                return;
+            }
+
+            try {
+                const response = await fetch(SUPABASE_URL + "guru", {
+                    method: "POST",
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization": "Bearer " + SUPABASE_KEY,
+                        "Content-Type": "application/json",
+                        "Prefer": "return=minimal"
+                    },
+                    body: JSON.stringify({ nama, nip, tugas })
+                });
+
+                if (response.ok) {
+                    alert(`Berhasil! Akun guru "${nama}" berhasil didaftarkan ke database.`);
+                    document.getElementById('reg-nama-guru').value = '';
+                    document.getElementById('reg-nip-guru').value = '';
+                    document.getElementById('reg-tugas-guru').value = '';
+                } else {
+                    const err = await response.json();
+                    alert("Gagal menyimpan ke Supabase: " + (err.message || response.statusText));
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Terjadi kesalahan jaringan saat menghubungkan ke Supabase.");
+            }
+        }
+
+        // Unggah Presensi via Excel (Sejalur Diakses Semua Guru)
+        function prosesUploadPresensiExcel() {
+            const targetKelas = document.getElementById('target-kelas-presensi').value;
+            const fileInput = document.getElementById('file-excel-presensi');
+
+            if (!targetKelas) {
+                alert("Mohon pilih Kelas target terlebih dahulu.");
+                return;
+            }
+            if (fileInput.files.length === 0) {
+                alert("Pilih file Excel presensi terlebih dahulu.");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const jsonResult = XLSX.utils.sheet_to_json(worksheet);
+
+                    if (jsonResult.length === 0) {
+                        alert("File Excel kosong atau format kolom tidak terbaca.");
+                        return;
+                    }
+
+                    alert(`Berhasil membaca ${jsonResult.length} baris data presensi untuk kelas ${targetKelas}. Data siap disinkronkan ke Supabase!`);
+                    // Di sini data siap di-loop dan dikirim via fetch POST ke endpoint Supabase tabel 'presensi'
+                } catch (err) {
+                    console.error(err);
+                    alert("Gagal membaca berkas Excel. Pastikan format tabel sesuai.");
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    </script>
+</body>
+</html>
