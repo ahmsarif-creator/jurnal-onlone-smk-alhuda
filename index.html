@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Akademik - SMK Al-Huda Kediri</title>
+    <title>Portal Akademik Terpadu - SMK Al-Huda Kediri</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -16,208 +16,180 @@
                 <img src="logo-alhuda-transparan.png" alt="Logo SMK Al-Huda" class="w-10 h-10 object-contain bg-white rounded-full p-1 shadow">
                 <div>
                     <h1 class="font-bold text-base md:text-lg leading-tight tracking-wide">SMK AL-HUDA KEDIRI</h1>
-                    <p class="text-[11px] text-emerald-200">Sistem Informasi Manajemen Terpadu</p>
+                    <p class="text-[11px] text-emerald-200">Portal Publik & Akademik Siswa</p>
                 </div>
             </div>
-            <div>
-                <button onclick="openConfigModal()" class="bg-emerald-700 hover:bg-emerald-600 text-xs font-medium px-3 py-1.5 rounded-lg transition shadow-sm flex items-center gap-1.5">
-                    <i class="fa-solid fa-gear"></i> <span class="hidden sm:inline">Konfigurasi</span>
+            <div class="flex items-center gap-2">
+                <button onclick="openGuruLoginModal()" class="bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold px-3.5 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5 border border-emerald-600">
+                    <i class="fa-solid fa-lock"></i> <span>Login Mode Guru</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Konten Utama -->
+    <!-- Konten Utama (Publik / Siswa / Wali Murid) -->
     <main class="max-w-7xl mx-auto px-4 py-6 space-y-6 w-full flex-grow">
 
-        <!-- Banner / Hero Section (Responsif untuk Ponsel & Desktop) -->
+        <!-- Banner / Hero Section -->
         <div class="relative rounded-2xl overflow-hidden shadow-xl bg-slate-900 text-white">
             <div class="absolute inset-0">
                 <img src="gedung-alhuda.png" alt="Gedung SMK Al-Huda" class="w-full h-full object-cover opacity-35">
             </div>
             <div class="relative p-6 sm:p-10 md:p-12 space-y-3">
-                <span class="bg-emerald-600/90 text-white text-[10px] sm:text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Portal Akademik Resmi</span>
-                <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">Selamat Datang, Sivitas Akademika</h2>
-                <p class="text-slate-200 max-w-xl text-xs sm:text-sm md:text-base leading-relaxed">Kelola absensi harian, jurnal mengajar, rekapitulasi daftar nilai, serta manajemen khusus wali kelas secara terstruktur dan terpusat.</p>
+                <span class="bg-emerald-600/90 text-white text-[10px] sm:text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Informasi Akademik Terbuka</span>
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">Pantau Perkembangan Siswa</h2>
+                <p class="text-slate-200 max-w-xl text-xs sm:text-sm md:text-base leading-relaxed">Halaman transparan bagi orang tua, wali murid, dan siswa untuk memantau rekapitulasi kehadiran, grafik nilai, serta jurnal kegiatan sekolah secara real-time.</p>
             </div>
         </div>
 
-        <!-- Menu Navigasi Modul Utama (Grid Responsif untuk HP & PC) -->
-        <div>
-            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 mb-3 px-1">Modul Layanan Utama</h3>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-                
-                <!-- Menu 1: Absensi -->
-                <div onclick="navigateTo('absensi')" class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-emerald-500 transition cursor-pointer group flex flex-col justify-between">
-                    <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg mb-3 group-hover:bg-emerald-600 group-hover:text-white transition">
-                        <i class="fa-solid fa-clipboard-user"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-slate-800 text-sm sm:text-base group-hover:text-emerald-700 transition">Absensi</h4>
-                        <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5">Kelola dan rekap kehadiran siswa.</p>
-                    </div>
-                </div>
-
-                <!-- Menu 2: Jurnal Guru -->
-                <div onclick="navigateTo('jurnal')" class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-emerald-500 transition cursor-pointer group flex flex-col justify-between">
-                    <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg mb-3 group-hover:bg-emerald-600 group-hover:text-white transition">
-                        <i class="fa-solid fa-book-open"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-slate-800 text-sm sm:text-base group-hover:text-emerald-700 transition">Jurnal Guru</h4>
-                        <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5">Catatan materi & kegiatan belajar.</p>
-                    </div>
-                </div>
-
-                <!-- Menu 3: Daftar Nilai -->
-                <div onclick="navigateTo('nilai')" class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-emerald-500 transition cursor-pointer group flex flex-col justify-between">
-                    <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg mb-3 group-hover:bg-emerald-600 group-hover:text-white transition">
-                        <i class="fa-solid fa-file-excel"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-slate-800 text-sm sm:text-base group-hover:text-emerald-700 transition">Daftar Nilai</h4>
-                        <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5">Input & unggah nilai via Excel.</p>
-                    </div>
-                </div>
-
-                <!-- Menu 4: Menu Wali Kelas -->
-                <div onclick="navigateTo('walikelas')" class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-emerald-500 transition cursor-pointer group flex flex-col justify-between">
-                    <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg mb-3 group-hover:bg-emerald-600 group-hover:text-white transition">
-                        <i class="fa-solid fa-chalkboard-user"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-slate-800 text-sm sm:text-base group-hover:text-emerald-700 transition">Wali Kelas</h4>
-                        <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5">Jurusan, Kelas & Data Siswa.</p>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- Bagian Aktivitas / Panel Akses Cepat Guru & Unggah Excel -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Bagian Grafik & Statistik Persentase (Kehadiran & Nilai) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             
-            <!-- Panel Kiri: Form Simpan / Input Data Guru -->
-            <div class="bg-white rounded-xl shadow-sm p-5 border border-slate-200 md:col-span-2 space-y-4">
-                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+            <!-- Statistik Kehadiran Sekolah -->
+            <div class="bg-white rounded-xl shadow-sm p-5 border border-slate-200 space-y-4">
+                <div class="flex justify-between items-center">
                     <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
-                        <i class="fa-solid fa-user-pen text-emerald-600"></i> Registrasi / Sesi Guru Aktif
+                        <i class="fa-solid fa-chart-pie text-emerald-600"></i> Persentase Kehadiran Siswa (Global)
                     </h3>
-                    <span class="text-[11px] bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full font-medium">Sistem Per-Guru</span>
+                    <span class="text-xs bg-emerald-50 text-emerald-700 font-semibold px-2.5 py-1 rounded-full">Bulan Ini</span>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                
+                <div class="space-y-3 pt-2">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap & Gelar</label>
-                        <input type="text" id="guru-nama" placeholder="Contoh: Ahmad Fauzi, S.Kom" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <div class="flex justify-between text-xs font-semibold mb-1 text-slate-600">
+                            <span>Hadir (H)</span>
+                            <span class="text-emerald-600 font-bold">92%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                            <div class="bg-emerald-600 h-2.5 rounded-full" style="width: 92%"></div>
+                        </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">NIP / ID Guru</label>
-                        <input type="text" id="guru-nip" placeholder="Contoh: 1985011..." class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Jurusan / Unit</label>
-                        <select id="guru-jurusan" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                            <option value="">Pilih Jurusan...</option>
-                            <option value="PPLG">Pengembangan Perangkat Lunak & Gim (PPLG)</option>
-                            <option value="TJKT">Teknik Jaringan Komputer & Telekomunikasi</option>
-                            <option value="TKRO">Teknik Kendaraan Ringan Otomotif</option>
-                            <option value="TBSM">Teknik Bisnis Sepeda Motor</option>
-                        </select>
+                        <div class="flex justify-between text-xs font-semibold mb-1 text-slate-600">
+                            <span>Izin / Sakit (I/S)</span>
+                            <span class="text-amber-600 font-bold">6%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                            <div class="bg-amber-500 h-2.5 rounded-full" style="width: 6%"></div>
+                        </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Kelas / Tugas Wali</label>
-                        <input type="text" id="guru-kelas" placeholder="Contoh: XII PPLG 1" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <div class="flex justify-between text-xs font-semibold mb-1 text-slate-600">
+                            <span>Tanpa Keterangan (Alpha)</span>
+                            <span class="text-rose-600 font-bold">2%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                            <div class="bg-rose-500 h-2.5 rounded-full" style="width: 2%"></div>
+                        </div>
                     </div>
-                </div>
-                <div class="pt-2 flex justify-end">
-                    <button onclick="saveGuruData()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg text-xs sm:text-sm transition shadow-sm flex items-center gap-2">
-                        <i class="fa-solid fa-floppy-disk"></i> Simpan Sesi Guru
-                    </button>
                 </div>
             </div>
 
-            <!-- Panel Kanan: Informasi & Status Sistem -->
-            <div class="bg-white rounded-xl shadow-sm p-5 border border-slate-200 flex flex-col justify-between space-y-4">
-                <div>
-                    <h3 class="font-bold text-slate-800 text-sm sm:text-base mb-2 flex items-center gap-2">
-                        <i class="fa-solid fa-circle-info text-emerald-600"></i> Status Koneksi
+            <!-- Statistik Ketuntasan Nilai Akademik -->
+            <div class="bg-white rounded-xl shadow-sm p-5 border border-slate-200 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+                        <i class="fa-solid fa-chart-column text-emerald-600"></i> Grafik Ketuntasan Nilai Semester
                     </h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">Terhubung langsung ke basis data awan Supabase untuk sinkronisasi absensi, jurnal, dan nilai secara real-time.</p>
+                    <span class="text-xs bg-emerald-50 text-emerald-700 font-semibold px-2.5 py-1 rounded-full">Akademik</span>
                 </div>
-                <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-2">
-                    <div class="flex justify-between text-xs">
-                        <span class="text-slate-500">Database:</span>
-                        <span class="font-semibold text-slate-700">Supabase Active</span>
+
+                <div class="space-y-3 pt-2">
+                    <div>
+                        <div class="flex justify-between text-xs font-semibold mb-1 text-slate-600">
+                            <span>Sangat Baik (Nilai &ge; 85)</span>
+                            <span class="text-emerald-600 font-bold">45%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                            <div class="bg-emerald-600 h-2.5 rounded-full" style="width: 45%"></div>
+                        </div>
                     </div>
-                    <div class="flex justify-between text-xs">
-                        <span class="text-slate-500">Instansi:</span>
-                        <span class="font-semibold text-slate-700">SMK Al-Huda Kediri</span>
+                    <div>
+                        <div class="flex justify-between text-xs font-semibold mb-1 text-slate-600">
+                            <span>Baik / Tuntas (Nilai 75 - 84)</span>
+                            <span class="text-blue-600 font-bold">45%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                            <div class="bg-blue-600 h-2.5 rounded-full" style="width: 45%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs font-semibold mb-1 text-slate-600">
+                            <span>Perlu Remedial (Nilai &lt; 75)</span>
+                            <span class="text-amber-600 font-bold">10%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                            <div class="bg-amber-500 h-2.5 rounded-full" style="width: 10%"></div>
+                        </div>
                     </div>
                 </div>
-                <button onclick="openAddJurnalModal()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-2 px-3 rounded-lg text-xs transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-plus"></i> Tambah Jurnal Cepat
+            </div>
+
+        </div>
+
+        <!-- Fitur Pencarian / Pantau Mandiri Siswa & Wali Murid -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4">
+            <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+                <i class="fa-solid fa-magnifying-glass text-emerald-600"></i> Pantau Rekap Nilai & Absensi Siswa
+            </h3>
+            <p class="text-xs text-slate-500">Masukkan Nomor Induk Siswa (NIS) atau Nama untuk melihat ringkasan status kehadiran dan nilai secara mandiri.</p>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <input type="text" id="cari-nis" placeholder="Masukkan NIS atau Nama Siswa..." class="flex-grow border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <button onclick="cariDataSiswa()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded-lg text-xs sm:text-sm transition shadow-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-search"></i> Cek Data
                 </button>
             </div>
-
+            <div id="hasil-pencarian" class="hidden p-4 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
+                <!-- Hasil pencarian akan muncul dinamis di sini -->
+            </div>
         </div>
 
     </main>
 
     <!-- Footer -->
     <footer class="text-center py-6 text-xs text-slate-400 border-t border-slate-200 bg-white mt-8">
-        &copy; 2026 SMK Al-Huda Kediri. All rights reserved. Didukung oleh Ekosistem Cloud Terpadu.
+        &copy; 2026 SMK Al-Huda Kediri. All rights reserved. Layanan Informasi Akademik Terpadu.
     </footer>
 
-    <!-- Skrip Logika Aplikasi & Konfigurasi Supabase -->
+    <!-- Skrip Interaktif & Validasi Password Mode Guru -->
     <script>
-        // Konfigurasi Supabase yang disediakan
         const SUPABASE_URL = "https://qrfwzyhwypxrodjxcnmf.supabase.co/rest/v1/";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFyZnd6eWh3eXB4cm9kanhjbm1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyMDc0NDgsImV4cCI6MjEwMzc4MzQ0OH0.gOzKeWaAZZVrWJ1bBq4forsRrQkL2Gw8JmIo1F_Gi3Y";
-        
-        let activeGuruSession = null;
 
-        // Fungsi Navigasi Antar Modul (untuk pengembangan file lanjutan Anda)
-        function navigateTo(moduleName) {
-            const moduleTitles = {
-                'absensi': 'Modul Absensi Siswa',
-                'jurnal': 'Modul Jurnal Mengajar Guru',
-                'nilai': 'Modul Daftar Nilai & Unggah Excel',
-                'walikelas': 'Modul Khusus Wali Kelas'
-            };
-            alert(`Mengarahkan ke: ${moduleTitles[moduleName] || moduleName}\n(Halaman modul ini siap Anda kembangkan pada file terpisah selanjutnya).`);
+        // Fungsi Keamanan Akses Mode Guru
+        function openGuruLoginModal() {
+            const password = prompt("Masukkan Kata Sandi Khusus Mode Guru:");
+            if (password === null) return; // Batal
+            
+            if (password === "smkbisa123") {
+                alert("Kata sandi benar! Mengarahkan ke Dashboard Khusus Mode Guru...");
+                // Di sini Anda bisa mengarahkan ke file terpisah, misal: window.location.href = "modul-guru.html";
+                window.location.href = "modul-guru.html"; // Ubah sesuai nama file terpisah mode guru Anda
+            } else {
+                alert("Kata sandi salah! Akses ditolak. Halaman ini khusus untuk publik, siswa, dan wali murid.");
+            }
         }
 
-        // Fungsi Simpan Data Guru & Sesi
-        function saveGuruData() {
-            const nama = document.getElementById('guru-nama').value;
-            const nip = document.getElementById('guru-nip').value;
-            const jurusan = document.getElementById('guru-jurusan').value;
-            const kelas = document.getElementById('guru-kelas').value;
+        // Simulasi Pencarian Mandiri Siswa / Wali Murid
+        function cariDataSiswa() {
+            const keyword = document.getElementById('cari-nis').value.trim();
+            const resultBox = document.getElementById('hasil-pencarian');
 
-            if(!nama || !nip) {
-                alert("Mohon isi Nama Lengkap dan NIP/ID Guru terlebih dahulu!");
+            if (!keyword) {
+                alert("Mohon masukkan NIS atau Nama Siswa terlebih dahulu.");
                 return;
             }
 
-            activeGuruSession = { nama, nip, jurusan, kelas };
-            alert(`Berhasil mengaktifkan sesi untuk:\nNama: ${nama}\nJurusan: ${jurusan || '-'}\nKelas: ${kelas || '-'}`);
-        }
-
-        function openConfigModal() {
-            alert("Informasi Konfigurasi Sistem:\n- Instansi: SMK Al-Huda Kota Kediri\n- Endpoint Supabase: " + SUPABASE_URL + "\n- Status: Terhubung (Ready)");
-        }
-
-        function openAddJurnalModal() {
-            if(!activeGuruSession) {
-                alert("Silakan isi dan simpan Sesi Guru terlebih dahulu pada form registrasi.");
-                return;
-            }
-            const materi = prompt(`Masukkan ringkasan jurnal mengajar untuk ${activeGuruSession.nama}:`);
-            if (materi) {
-                alert("Jurnal mengajar berhasil dicatat untuk sesi Anda!");
-            }
+            resultBox.classList.remove('hidden');
+            resultBox.innerHTML = `
+                <p class="font-bold text-emerald-800 text-sm mb-1"><i class="fa-solid fa-circle-check"></i> Hasil Pencarian untuk: "${keyword}"</p>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-200">
+                    <div><span class="text-slate-500 block">Kehadiran:</span> <strong class="text-emerald-700">95% (Hadir)</strong></div>
+                    <div><span class="text-slate-500 block">Rata-rata Nilai:</span> <strong class="text-blue-700">83.5 (Baik)</strong></div>
+                    <div><span class="text-slate-500 block">Status:</span> <strong class="text-slate-700">Aktif / Sekolah</strong></div>
+                    <div><span class="text-slate-500 block">Catatan Wali:</span> <strong class="text-slate-700">Disiplin Baik</strong></div>
+                </div>
+            `;
         }
     </script>
 </body>
