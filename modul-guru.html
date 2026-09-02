@@ -3,1021 +3,719 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jurnal, Absensi & Nilai Pengajar - SMK Al-Huda Kediri</title>
+    <title>Modul Manajemen Guru & Absensi - SMK Al-Huda Kediri</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Styling khusus untuk mode Cetak / Print (Kop Surat & Sembunyikan Navigasi) -->
-    <style>
-        @media print {
-            body {
-                background-color: white !important;
-                color: black !important;
-            }
-            header, nav, .no-print, button {
-                display: none !important;
-            }
-            .print-area {
-                display: block !important;
-                width: 100% !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                box-shadow: none !important;
-                border: none !important;
-            }
-            table {
-                width: 100% !important;
-                border-collapse: collapse !important;
-            }
-            th, td {
-                border: 1px solid #cbd5e1 !important;
-                padding: 6px 8px !important;
-                font-size: 11px !important;
-            }
-        }
-    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
 
-    <!-- Header / Navigasi Jurnal -->
     <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-3.5 flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <img src="logo-alhuda-transparan.png" alt="Logo SMK Al-Huda" class="w-10 h-10 object-contain bg-white rounded-full p-1 shadow" onerror="this.src='https://via.placeholder.com/40'">
                 <div>
-                    <h1 class="font-bold text-base md:text-lg leading-tight tracking-wide">PORTAL GURU & AKADEMIK</h1>
-                    <p class="text-[11px] text-emerald-400" id="info-nama-guru">Memuat profil pengajar...</p>
+                    <h1 class="font-bold text-base md:text-lg leading-tight tracking-wide">MODUL GURU & ADMIN</h1>
+                    <p class="text-[11px] text-emerald-400">SMK Al-Huda Kediri - Terintegrasi Supabase</p>
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <a href="modul-guru.html" class="bg-slate-800 hover:bg-slate-700 text-xs font-semibold px-3.5 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
-                    <i class="fa-solid fa-arrow-left"></i> <span>Modul Guru</span>
+                <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-xs font-semibold px-3.5 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
+                    <i class="fa-solid fa-house"></i> <span>Beranda Portal</span>
                 </a>
-                <button onclick="logoutGuru()" class="bg-rose-600 hover:bg-rose-700 text-xs font-semibold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
-                    <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
-                </button>
             </div>
         </div>
     </header>
 
-    <!-- Menu Tab Navigasi Halaman Guru -->
-    <nav class="bg-white border-b border-slate-200 shadow-sm sticky top-[65px] z-40">
-        <div class="max-w-7xl mx-auto px-4 flex space-x-4 overflow-x-auto">
-            <button onclick="gantiTab('jurnal')" id="tab-btn-jurnal" class="py-3 px-4 border-b-2 font-semibold text-xs sm:text-sm flex items-center gap-2 transition border-indigo-600 text-indigo-600 whitespace-nowrap">
-                <i class="fa-solid fa-book-journal-whills"><span>Jurnal Harian KBM</span></i>
-            </button>
-            <button onclick="gantiTab('absensi')" id="tab-btn-absensi" class="py-3 px-4 border-b-2 border-transparent font-medium text-slate-600 hover:text-slate-900 text-xs sm:text-sm flex items-center gap-2 transition whitespace-nowrap">
-                <i class="fa-solid fa-clipboard-user"><span>Absensi Kelas</span></i>
-            </button>
-            <button onclick="gantiTab('nilai')" id="tab-btn-nilai" class="py-3 px-4 border-b-2 border-transparent font-medium text-slate-600 hover:text-slate-900 text-xs sm:text-sm flex items-center gap-2 transition whitespace-nowrap">
-                <i class="fa-solid fa-star-half-stroke"><span>Daftar Nilai Siswa</span></i>
-            </button>
-            <button onclick="gantiTab('walikelas')" id="tab-btn-walikelas" class="py-3 px-4 border-b-2 border-transparent font-medium text-slate-600 hover:text-slate-900 text-xs sm:text-sm flex items-center gap-2 transition whitespace-nowrap">
-                <i class="fa-solid fa-id-badge"><span>Mode Wali Kelas</span></i>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Konten Utama -->
     <main class="max-w-7xl mx-auto px-4 py-6 space-y-6 w-full flex-grow">
 
-        <!-- ================= TAB 1: JURNAL HARIAN ================= -->
-        <div id="content-jurnal" class="space-y-6">
-            <div class="bg-gradient-to-r from-indigo-800 to-slate-900 text-white rounded-2xl p-6 shadow-md flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="bg-gradient-to-r from-emerald-800 to-teal-900 text-white rounded-2xl p-6 shadow-md flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="space-y-1">
+                <span class="bg-emerald-700 text-emerald-100 text-[10px] font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Sistem Akademik Terpadu</span>
+                <h2 class="text-xl md:text-2xl font-bold pt-1">Modul Pengelola Pengajar & Absensi Siswa</h2>
+                <p class="text-emerald-100 text-xs md:text-sm">Kelola pendaftaran akun guru, perbarui data akun, unggah database siswa via Excel, dan hapus data jika keliru.</p>
+            </div>
+            <div class="bg-emerald-950/60 p-4 rounded-xl border border-emerald-700/60 text-xs space-y-1.5 min-w-[220px] shadow-inner">
+                <div class="text-emerald-300 font-semibold border-b border-emerald-800 pb-1">Status Sistem:</div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-400"></i> Database Terhubung</div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-database text-emerald-400"></i> Supabase Active</div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200">
+            <div class="flex items-center gap-3 border-b border-slate-100 pb-3 mb-4">
+                <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg shadow-sm">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                </div>
                 <div>
-                    <span class="bg-indigo-700 text-indigo-100 text-[10px] font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Jurnal Mengajar Harian</span>
-                    <h2 class="text-xl md:text-2xl font-bold pt-1" id="salam-jurnal">Form Jurnal & Kehadiran Kelas</h2>
-                    <p class="text-indigo-100 text-xs md:text-sm">Catat materi pokok, materi inti, dan presensi siswa per kelas yang Anda ampu.</p>
-                </div>
-                <div class="bg-indigo-950/60 p-3.5 rounded-xl border border-indigo-700/60 text-xs space-y-1 min-w-[200px] text-right">
-                    <div class="text-indigo-300 font-semibold">Tanggal Jurnal:</div>
-                    <input type="date" id="input-tanggal-jurnal" class="bg-indigo-900 text-white border border-indigo-600 rounded p-1 text-xs font-bold text-center w-full">
+                    <h3 class="font-bold text-slate-800 text-sm sm:text-base">Login Halaman Jurnal Guru</h3>
+                    <p class="text-[11px] text-slate-500">Masuk menggunakan NIP/ID dan password terdaftar untuk membuka Jurnal Mengajar.</p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Panel Detail Jurnal -->
-                <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4 lg:col-span-1">
-                    <h3 id="jurnal-form-title" class="font-bold text-slate-800 text-sm sm:text-base border-b border-slate-100 pb-3 flex items-center gap-2">
-                        <i class="fa-solid fa-pen-nib text-indigo-600"></i> Detail Kurikulum KBM
-                    </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">NIP / ID Pengajar</label>
+                    <input type="text" id="login-nip" placeholder="Masukkan NIP / ID Anda" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Password Akun</label>
+                    <input type="password" id="login-password" placeholder="••••••••" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <button onclick="loginGuru()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-lg text-xs sm:text-sm transition shadow-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i> Masuk Jurnal Guru
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-3 border-b border-slate-100 pb-3 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-lg shadow-sm" id="icon-form-header">
+                            <i class="fa-solid fa-user-plus" id="icon-form-i"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-sm sm:text-base" id="title-form-guru">Registrasi Akun Guru Baru</h3>
+                            <p class="text-[11px] text-slate-500" id="desc-form-guru">Atur akun, mata pelajaran, kelas yang diampu, serta status wali kelas.</p>
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="edit-id-guru" value="">
+
+                    <div class="space-y-3.5">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap & Gelar Guru</label>
+                            <input type="text" id="reg-nama-guru" placeholder="Contoh: Budi Santoso, S.Pd" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">NIP / ID Unik (Login)</label>
+                                <input type="text" id="reg-nip-guru" placeholder="NIP / ID Pengajar" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Password Akun</label>
+                                <input type="password" id="reg-password-guru" placeholder="Kata sandi rahasia" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Pengampu Mata Pelajaran</label>
+                            <input type="text" id="reg-tugas-guru" placeholder="Contoh: Produktif TKJ / Matematika" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                        </div>
+
+                        <!-- Daftar Kelas yang Diampu (Sebagai Guru Mapel) -->
+                        <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-2.5">
+                            <label class="block text-xs font-bold text-slate-700 flex items-center justify-between">
+                                <span><i class="fa-solid fa-chalkboard text-amber-600 mr-1"></i> Daftar Kelas & Rombel yang Diampu (Mapel)</span>
+                                <span class="text-[10px] text-slate-400 font-normal">Tambah kelas mengajar</span>
+                            </label>
+                            
+                            <div class="grid grid-cols-3 gap-2">
+                                <div>
+                                    <select id="input-pilih-tingkat" class="w-full border border-slate-300 rounded-lg p-1.5 text-xs bg-white">
+                                        <option value="X">Kelas X</option>
+                                        <option value="XI">Kelas XI</option>
+                                        <option value="XII">Kelas XII</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <select id="input-pilih-jurusan" class="w-full border border-slate-300 rounded-lg p-1.5 text-xs bg-white">
+                                        <option value="TKJ">TKJ</option>
+                                        <option value="TITL">TITL</option>
+                                        <option value="TKR">TKR</option>
+                                        <option value="TSM">TSM</option>
+                                        <option value="TPM">TPM</option>
+                                        <option value="PF">PF</option>
+                                    </select>
+                                </div>
+                                <div class="flex gap-1">
+                                    <select id="input-pilih-rombel" class="w-full border border-slate-300 rounded-lg p-1.5 text-xs bg-white">
+                                        <option value="1">Rombel 1</option>
+                                        <option value="2">Rombel 2</option>
+                                    </select>
+                                    <button type="button" onclick="tambahDaftarKelasGuru()" class="bg-amber-600 hover:bg-amber-700 text-white px-2.5 rounded-lg text-xs font-bold transition shadow-sm" title="Tambah Kelas"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div id="container-badge-kelas" class="flex flex-wrap gap-1.5 pt-1 min-h-[32px] items-center">
+                                <span class="text-[11px] text-slate-400 italic">Belum ada kelas mapel yang ditambahkan.</span>
+                            </div>
+                        </div>
+
+                        <!-- Status Tugas Tambahan: Wali Kelas -->
+                        <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl space-y-3">
+                            <label class="block text-xs font-bold text-slate-700">Status Tugas Tambahan</label>
+                            <div class="flex gap-4">
+                                <label class="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                    <input type="radio" name="status-wali" value="bukan" checked onchange="toggleOpsiWaliKelas()" class="text-amber-600 focus:ring-amber-500">
+                                    Bukan Wali Kelas
+                                </label>
+                                <label class="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                    <input type="radio" name="status-wali" value="ya" onchange="toggleOpsiWaliKelas()" class="text-amber-600 focus:ring-amber-500">
+                                    Wali Kelas
+                                </label>
+                            </div>
+
+                            <!-- Pilihan Kelas Wali Kelas (Hanya 1 Kelas Binaan) -->
+                            <div id="wrapper-pilihan-walikelas" class="hidden space-y-2 pt-2 border-t border-slate-200">
+                                <label class="block text-xs font-bold text-slate-700">
+                                    <i class="fa-solid fa-user-tie text-amber-600 mr-1"></i> Pilih Kelas Binaan Wali Kelas
+                                </label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div>
+                                        <select id="input-wali-tingkat" class="w-full border border-slate-300 rounded-lg p-1.5 text-xs bg-white">
+                                            <option value="X">Kelas X</option>
+                                            <option value="XI">Kelas XI</option>
+                                            <option value="XII">Kelas XII</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <select id="input-wali-jurusan" class="w-full border border-slate-300 rounded-lg p-1.5 text-xs bg-white">
+                                            <option value="TKJ">TKJ</option>
+                                            <option value="TITL">TITL</option>
+                                            <option value="TKR">TKR</option>
+                                            <option value="TSM">TSM</option>
+                                            <option value="TPM">TPM</option>
+                                            <option value="PF">PF</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <select id="input-wali-rombel" class="w-full border border-slate-300 rounded-lg p-1.5 text-xs bg-white">
+                                            <option value="1">Rombel 1</option>
+                                            <option value="2">Rombel 2</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-amber-50 border border-amber-200 p-3.5 rounded-xl space-y-2 mt-2">
+                            <label class="block text-xs font-bold text-amber-900 flex items-center gap-1.5">
+                                <i class="fa-solid fa-shield-halved text-amber-600"></i> Kode Verifikasi Admin (Password Admin)
+                            </label>
+                            <input type="password" id="reg-admin-password" placeholder="Password admin (adminsmk123)" class="w-full border border-amber-300 rounded-lg p-2 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            <p class="text-[10px] text-amber-700">Wajib diisi oleh admin sekolah untuk mengonfirmasi penyimpanan akun.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex gap-2">
+                    <button onclick="simpanAtauPerbaruiAkunGuru()" id="btn-submit-guru" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2.5 px-4 rounded-lg text-xs sm:text-sm transition shadow-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-user-check"></i> Simpan & Daftarkan Akun Guru
+                    </button>
+                    <button onclick="batalEditGuru()" id="btn-batal-edit" class="hidden bg-slate-500 hover:bg-slate-600 text-white font-semibold py-2.5 px-3 rounded-lg text-xs transition">
+                        Batal
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-3 border-b border-slate-100 pb-3 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg shadow-sm">
+                            <i class="fa-solid fa-file-excel"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-sm sm:text-base">Upload & Kelola Master Data Siswa</h3>
+                            <p class="text-[11px] text-slate-500">Unggah data siswa via Excel atau hapus data kelas jika salah upload.</p>
+                        </div>
+                    </div>
                     
-                    <input type="hidden" id="edit-jurnal-id" value="">
-
-                    <div class="space-y-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Kelas yang Diampu</label>
-                            <select id="pilih-kelas-jurnal" onchange="muatSiswaUntukJurnal()" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm bg-white font-medium text-indigo-900 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                                <option value="">-- Pilih Kelas --</option>
-                            </select>
+                    <div class="space-y-3.5">
+                        <div class="grid grid-cols-3 gap-2">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Tingkat</label>
+                                <select id="target-tingkat" class="w-full border border-slate-300 rounded-lg p-2 text-xs bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                                    <option value="X">X</option>
+                                    <option value="XI">XI</option>
+                                    <option value="XII">XII</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Jurusan</label>
+                                <select id="target-jurusan" class="w-full border border-slate-300 rounded-lg p-2 text-xs bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                                    <option value="TKJ">TKJ</option>
+                                    <option value="TITL">TITL</option>
+                                    <option value="TKR">TKR</option>
+                                    <option value="TSM">TSM</option>
+                                    <option value="TPM">TPM</option>
+                                    <option value="PF">PF</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Rombel</label>
+                                <select id="target-rombel" class="w-full border border-slate-300 rounded-lg p-2 text-xs bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                                    <option value="1">Rombel 1</option>
+                                    <option value="2">Rombel 2</option>
+                                </select>
+                            </div>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Mata Pelajaran</label>
-                            <input type="text" id="jurnal-mapel" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs bg-slate-50 text-slate-600" readonly>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">File Excel Siswa (.xlsx / .xls)</label>
+                            <input type="file" id="file-excel-siswa" accept=".xlsx, .xls" class="w-full border border-slate-300 rounded-lg p-2 text-xs bg-slate-50 file:mr-4 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-700 cursor-pointer">
+                            <p class="text-[10px] text-slate-400 mt-1">Kolom excel wajib: <code class="bg-slate-100 text-slate-600 px-1 py-0.5 rounded">nama</code> dan <code class="bg-slate-100 text-slate-600 px-1 py-0.5 rounded">nomor_induk</code> (atau nis).</p>
                         </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Materi Pokok</label>
-                            <input type="text" id="jurnal-materi-pokok" placeholder="Contoh: Jaringan Komputer Nirkabel" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Materi Inti / Pembahasan</label>
-                            <textarea id="jurnal-materi-inti" rows="3" placeholder="Rincian pembahasan materi inti hari ini..." class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Keterangan / Catatan Tambahan (Opsional)</label>
-                            <textarea id="jurnal-keterangan-teks" rows="2" placeholder="Catatan khusus pelaksanaan KBM..." class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-2 mt-4">
-                        <button onclick="simpanJurnalHarian()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-lg text-xs sm:text-sm transition shadow-sm flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-floppy-disk"></i> Simpan Jurnal & Presensi
-                        </button>
-                        <button id="btn-batal-edit" onclick="resetFormJurnal()" class="hidden bg-slate-300 hover:bg-slate-400 text-slate-700 font-semibold py-2.5 px-3 rounded-lg text-xs transition">
-                            Batal
-                        </button>
                     </div>
                 </div>
 
-                <!-- Panel Absensi Siswa dalam Jurnal -->
-                <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4 lg:col-span-2">
-                    <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                        <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
-                            <i class="fa-solid fa-users text-indigo-600"></i> Absensi Kehadiran Siswa
-                        </h3>
-                        <span id="badge-total-siswa-jurnal" class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-xs font-semibold">Total: 0 Siswa</span>
-                    </div>
-
-                    <div class="overflow-x-auto border border-slate-200 rounded-lg max-h-[480px]">
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead class="sticky top-0 bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
-                                <tr>
-                                    <th class="p-3">No</th>
-                                    <th class="p-3">NIS</th>
-                                    <th class="p-3">Nama Siswa</th>
-                                    <th class="p-3 text-center">Pilihan Kehadiran (Hadir / Sakit / Izin / Alfa)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabel-jurnal-siswa-body">
-                                <tr>
-                                    <td colspan="4" class="p-6 text-center text-slate-400 italic">Silakan pilih kelas terlebih dahulu pada panel di samping.</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="pt-4 space-y-2">
+                    <button onclick="prosesUploadDataSiswa()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-lg text-xs sm:text-sm transition shadow-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Simpan Master Data ke Supabase
+                    </button>
+                    <button onclick="hapusDataSiswaPerKelas()" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold py-2 px-4 rounded-lg text-xs transition border border-rose-200 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-trash-can"></i> Hapus Data Absensi Kelas Terpilih (Reset)
+                    </button>
                 </div>
             </div>
 
-            <!-- Panel Rekapitulasi Jurnal Tersimpan di Bawah -->
-            <div id="print-area-jurnal" class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4">
-                <div class="border-b-2 border-slate-800 pb-4 flex items-center justify-between gap-4">
-                    <div class="flex items-center gap-3">
-                        <img src="logo-alhuda-transparan.png" alt="Logo" class="w-14 h-14 object-contain" onerror="this.src='https://via.placeholder.com/60'">
-                        <div>
-                            <h2 class="text-base md:text-lg font-bold tracking-wide text-slate-900 uppercase">SMK AL-HUDA KOTA KEDIRI</h2>
-                            <p class="text-[11px] text-slate-600">Jl. Masjid Al-Huda No. 196, Kelurahan Ngadirejo, Kecamatan Kota, Kota Kediri, Jawa Timur 64122</p>
-                            <p class="text-[10px] text-indigo-700 font-semibold">REKAPITULASI JURNAL MENGAJAR HARIAN GURU</p>
-                        </div>
-                    </div>
-                    <div class="text-right no-print">
-                        <button onclick="cetakArea('print-area-jurnal')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 shadow-sm">
-                            <i class="fa-solid fa-print"></i> Cetak Rekap Jurnal
-                        </button>
-                    </div>
-                </div>
+        </div>
 
-                <div class="flex justify-between items-center pt-2">
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div>
                     <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
-                        <i class="fa-solid fa-rectangle-list text-indigo-600"></i> Riwayat Jurnal KBM Anda
+                        <i class="fa-solid fa-chalkboard-user text-emerald-600"></i> Daftar Pengajar & Kelas Diampu
                     </h3>
-                    <button onclick="muatRekapJurnal()" class="no-print bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-rotate"></i> Muat Ulang
-                    </button>
+                    <p class="text-xs text-slate-500">Daftar akun pengajar yang aktif di dalam database Supabase beserta pemetaan kelas dan status wali kelasnya.</p>
                 </div>
-
-                <div class="overflow-x-auto border border-slate-200 rounded-lg">
-                    <table class="w-full text-left border-collapse text-xs">
-                        <thead class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
-                            <tr>
-                                <th class="p-3">Tanggal</th>
-                                <th class="p-3">Kelas</th>
-                                <th class="p-3">Materi Pokok</th>
-                                <th class="p-3">Materi Inti / Pembahasan</th>
-                                <th class="p-3">Keterangan</th>
-                                <th class="p-3 text-center no-print">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabel-rekap-jurnal-body">
-                            <tr>
-                                <td colspan="6" class="p-6 text-center text-slate-400 italic">Memuat rekap jurnal...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= TAB 2: ABSENSI KELAS ================= -->
-        <div id="content-absensi" class="space-y-6 hidden">
-            <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-3">
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                            <i class="fa-solid fa-clipboard-user text-emerald-600"></i> Rekapitulasi Absensi Kelas Diampu
-                        </h3>
-                        <p class="text-xs text-slate-500">Pilih kelas yang diampu untuk memantau status absensi harian siswa.</p>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <select id="pilih-kelas-absensi-tab" onchange="muatRekapAbsensiTab()" class="border border-slate-300 rounded-lg p-2 text-xs bg-white font-medium">
-                            <option value="">-- Pilih Kelas --</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="overflow-x-auto border border-slate-200 rounded-lg">
-                    <table class="w-full text-left border-collapse text-xs">
-                        <thead class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
-                            <tr>
-                                <th class="p-3">No</th>
-                                <th class="p-3">NIS</th>
-                                <th class="p-3">Nama Siswa</th>
-                                <th class="p-3">Kelas / Jurusan / Rombel</th>
-                                <th class="p-3 text-center">Status Saat Ini</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabel-rekap-absensi-body">
-                            <tr>
-                                <td colspan="5" class="p-6 text-center text-slate-400 italic">Pilih kelas di atas untuk melihat rekap absensi.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= TAB 3: DAFTAR NILAI ================= -->
-        <div id="content-nilai" class="space-y-6 hidden">
-            <div id="print-area-nilai" class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4">
-                <div class="border-b-2 border-slate-800 pb-4 flex items-center justify-between gap-4">
-                    <div class="flex items-center gap-3">
-                        <img src="logo-alhuda-transparan.png" alt="Logo" class="w-14 h-14 object-contain" onerror="this.src='https://via.placeholder.com/60'">
-                        <div>
-                            <h2 class="text-base md:text-lg font-bold tracking-wide text-slate-900 uppercase">SMK AL-HUDA KOTA KEDIRI</h2>
-                            <p class="text-[11px] text-slate-600">Jl. Masjid Al-Huda No. 196, Kelurahan Ngadirejo, Kecamatan Kota, Kota Kediri, Jawa Timur 64122</p>
-                            <p class="text-[10px] text-amber-700 font-semibold">DAFTAR PENGISIAN NILAI AKADEMIK SISWA</p>
-                        </div>
-                    </div>
-                    <div class="no-print">
-                        <button onclick="cetakArea('print-area-nilai')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 shadow-sm">
-                            <i class="fa-solid fa-print"></i> Cetak Daftar Nilai
-                        </button>
-                    </div>
-                </div>
-
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pt-2">
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                            <i class="fa-solid fa-star-half-stroke text-amber-600"></i> Pengisian & Rekap Daftar Nilai Siswa
-                        </h3>
-                        <p class="text-xs text-slate-500">Input nilai tugas/materi sesuai kelas dan mata pelajaran yang diampu.</p>
-                    </div>
-                    <div class="no-print grid grid-cols-1 sm:grid-cols-3 gap-2 w-full md:w-auto">
-                        <select id="pilih-kelas-nilai" onchange="muatSiswaUntukNilai()" class="border border-slate-300 rounded-lg p-2 text-xs bg-white font-medium">
-                            <option value="">-- Pilih Kelas --</option>
-                        </select>
-                        <input type="text" id="nilai-materi-pokok" placeholder="Materi Pokok" class="border border-slate-300 rounded-lg p-2 text-xs">
-                        <input type="text" id="nilai-tugas-materi" placeholder="Nama Tugas / Bab" class="border border-slate-300 rounded-lg p-2 text-xs">
-                    </div>
-                </div>
-
-                <div class="overflow-x-auto border border-slate-200 rounded-lg">
-                    <table class="w-full text-left border-collapse text-xs">
-                        <thead class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
-                            <tr>
-                                <th class="p-3">No</th>
-                                <th class="p-3">NIS</th>
-                                <th class="p-3">Nama Siswa</th>
-                                <th class="p-3">Kelas / Jurusan / Rombel</th>
-                                <th class="p-3 text-center">Nilai Angka (0 - 100)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabel-nilai-siswa-body">
-                            <tr>
-                                <td colspan="5" class="p-6 text-center text-slate-400 italic">Pilih kelas dan tentukan materi tugas di atas.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="flex justify-end pt-2 no-print">
-                    <button onclick="simpanDaftarNilai()" class="bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2.5 px-6 rounded-lg text-xs transition shadow-sm flex items-center gap-2">
-                        <i class="fa-solid fa-check-to-slot"></i> Simpan Daftar Nilai Siswa
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= TAB 4: MODE WALI KELAS ================= -->
-        <div id="content-walikelas" class="space-y-6 hidden">
-            <div class="bg-gradient-to-r from-emerald-800 to-teal-900 text-white rounded-2xl p-6 shadow-md space-y-2">
-                <span class="bg-emerald-700 text-emerald-100 text-[10px] font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Akses Khusus Wali Kelas</span>
-                <h2 class="text-xl md:text-2xl font-bold" id="walikelas-title">Mode Wali Kelas</h2>
-                <p class="text-emerald-100 text-xs md:text-sm" id="walikelas-desc">Informasi rombongan belajar, rekapitulasi nilai guru lain, jurnal, serta catatan khusus siswa perwalian Anda.</p>
+                <button onclick="muatDataGuru()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-2 rounded-lg transition flex items-center gap-1.5 border border-slate-300">
+                    <i class="fa-solid fa-rotate"></i> <span>Muat Ulang Data</span>
+                </button>
             </div>
 
-            <!-- Bagian Filter Sorot Per Mata Pelajaran -->
-            <div class="bg-white rounded-xl shadow-sm p-5 border border-slate-200 space-y-4">
-                <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
-                    <i class="fa-solid fa-filter text-emerald-600"></i> Sorot Rekapitulasi Berdasarkan Mata Pelajaran Lain
-                </h3>
-                <p class="text-xs text-slate-500">Pilih mata pelajaran yang diajar oleh guru lain di kelas perwalian Anda untuk memantau nilai dan jurnal harian mereka.</p>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Mata Pelajaran</label>
-                        <select id="filter-mapel-walikelas" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs bg-white font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                            <option value="">-- Semua Mata Pelajaran --</option>
-                        </select>
-                    </div>
-                    <div>
-                        <button onclick="muatRekapMapelWaliKelas()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2.5 rounded-lg text-xs transition shadow-sm flex items-center justify-center gap-2 w-full sm:w-auto">
-                            <i class="fa-solid fa-magnifying-glass"></i> Tampilkan Sorotan Mapel
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Kotak Ringkasan Presentase / Statistik Nilai Mapel Terpilih -->
-                <div id="box-statistik-mapel" class="hidden grid grid-cols-1 sm:grid-cols-3 gap-4 pt-3 border-t border-slate-100">
-                    <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-xl text-center">
-                        <p class="text-[11px] text-emerald-700 font-semibold uppercase">Rata-Rata Kelas</p>
-                        <h4 id="stat-rata-rata" class="text-xl font-extrabold text-emerald-900 mt-1">0.0</h4>
-                    </div>
-                    <div class="bg-blue-50 border border-blue-200 p-3.5 rounded-xl text-center">
-                        <p class="text-[11px] text-blue-700 font-semibold uppercase">Tuntas (&ge; 75)</p>
-                        <h4 id="stat-tuntas" class="text-xl font-extrabold text-blue-900 mt-1">0 Siswa (0%)</h4>
-                    </div>
-                    <div class="bg-amber-50 border border-amber-200 p-3.5 rounded-xl text-center">
-                        <p class="text-[11px] text-amber-700 font-semibold uppercase">Remedial (&lt; 75)</p>
-                        <h4 id="stat-remedial" class="text-xl font-extrabold text-amber-900 mt-1">0 Siswa (0%)</h4>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tabel Data Siswa Perwalian, Catatan & Nilai Guru Lain -->
-            <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4">
-                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                        <i class="fa-solid fa-graduation-cap text-emerald-600"></i> Daftar Siswa Perwalian, Nilai Mapel & Catatan Khusus
-                    </h3>
-                    <span id="badge-total-perwalian" class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-semibold">Total: 0 Siswa</span>
-                </div>
-
-                <div class="overflow-x-auto border border-slate-200 rounded-lg">
-                    <table class="w-full text-left border-collapse text-xs">
-                        <thead class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
-                            <tr>
-                                <th class="p-3">No</th>
-                                <th class="p-3">NIS</th>
-                                <th class="p-3">Nama Siswa</th>
-                                <th class="p-3">Kelas / Rombel</th>
-                                <th class="p-3 text-center">Kehadiran</th>
-                                <th class="p-3 text-center" id="th-label-nilai-mapel">Nilai Mapel Terpilih</th>
-                                <th class="p-3">Catatan Wali Kelas (Bisa Diketik)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabel-perwalian-body">
-                            <tr>
-                                <td colspan="7" class="p-6 text-center text-slate-400 italic">Memuat data perwalian...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Panel Rekap Jurnal Mengajar Guru Lain untuk Kelas Ini -->
-            <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4">
-                <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                    <i class="fa-solid fa-book-open text-emerald-600"></i> Jurnal Harian Pengajar Lain di Kelas Perwalian Anda
-                </h3>
-                <div class="overflow-x-auto border border-slate-200 rounded-lg">
-                    <table class="w-full text-left border-collapse text-xs">
-                        <thead class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
-                            <tr>
-                                <th class="p-3">Tanggal</th>
-                                <th class="p-3">Guru Pengampu</th>
-                                <th class="p-3">Mata Pelajaran</th>
-                                <th class="p-3">Materi Pokok & Inti</th>
-                                <th class="p-3">Keterangan</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabel-jurnal-walikelas-body">
-                            <tr>
-                                <td colspan="5" class="p-6 text-center text-slate-400 italic">Memuat jurnal pengajar lain...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="overflow-x-auto border border-slate-200 rounded-lg">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                            <th class="p-3">No</th>
+                            <th class="p-3">Nama & Gelar</th>
+                            <th class="p-3">NIP / ID (Login)</th>
+                            <th class="p-3">Mata Pelajaran</th>
+                            <th class="p-3">Kelas Mapel Diampu</th>
+                            <th class="p-3">Wali Kelas</th>
+                            <th class="p-3 text-center">Aksi / Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabel-guru-body">
+                        <tr>
+                            <td colspan="7" class="p-4 text-center text-slate-400 italic">Memuat data guru dari database...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
     </main>
 
-    <!-- Footer -->
-    <footer class="text-center py-6 text-xs text-slate-400 border-t border-slate-200 bg-white mt-8 no-print">
-        &copy; 2026 SMK Al-Huda Kediri. Sistem Akademik Terpadu.
+    <footer class="text-center py-6 text-xs text-slate-400 border-t border-slate-200 bg-white mt-8">
+        &copy; 2026 SMK Al-Huda Kediri. Modul Khusus Guru & Manajemen Sistem Terpadu.
     </footer>
 
-    <!-- Skrip JavaScript -->
     <script>
         const SUPABASE_URL = "https://qrfwzyhwypxrodjxcnmf.supabase.co/rest/v1/";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFyZnd6eWh3eXB4cm9kanhjbm1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyMDc0NDgsImV4cCI6MjEwMzc4MzQ0OH0.gOzKeWaAZZVrWJ1bBq4forsRrQkL2Gw8JmIo1F_Gi3Y";
 
-        let currentGuru = null;
-        let daftarSiswaJurnal = [];
-        let daftarSiswaNilai = [];
-        let cacheDataNilaiKelas = []; // Menyimpan data nilai dari semua guru untuk kelas perwalian
+        let daftarKelasPilihanGuru = [];
+        let daftarGuruGlobal = [];
 
         window.addEventListener('DOMContentLoaded', () => {
-            const sessionData = localStorage.getItem('session_guru');
-            if (!sessionData) {
-                alert("Sesi login tidak ditemukan. Silakan login terlebih dahulu.");
-                window.location.href = "modul-guru.html";
-                return;
-            }
-
-            currentGuru = JSON.parse(sessionData);
-
-            // Set Header & Informasi Guru
-            document.getElementById('info-nama-guru').innerText = `${currentGuru.nama} (${currentGuru.tugas || 'Guru Pengampu'})`;
-            document.getElementById('salam-jurnal').innerText = `Selamat Datang, ${currentGuru.nama}`;
-            document.getElementById('jurnal-mapel').value = currentGuru.tugas || 'Mata Pelajaran Umum';
-
-            // Set Tanggal Hari Ini ke Input Tanggal
-            const todayStr = new Date().toISOString().split('T')[0];
-            document.getElementById('input-tanggal-jurnal').value = todayStr;
-
-            // Inisialisasi Dropdown Kelas & Data Rekap
-            isiDropdownKelasSemua();
-            muatRekapJurnal();
-            muatDataWaliKelas();
+            muatDataGuru();
         });
 
-        // Ganti Menu Tab
-        function gantiTab(tabName) {
-            ['jurnal', 'absensi', 'nilai', 'walikelas'].forEach(t => {
-                document.getElementById(`content-${t}`).classList.add('hidden');
-                document.getElementById(`tab-btn-${t}`).className = "py-3 px-4 border-b-2 border-transparent font-medium text-slate-600 hover:text-slate-900 text-xs sm:text-sm flex items-center gap-2 transition whitespace-nowrap";
-            });
-
-            document.getElementById(`content-${tabName}`).classList.remove('hidden');
-            document.getElementById(`tab-btn-${tabName}`).className = "py-3 px-4 border-b-2 font-semibold text-xs sm:text-sm flex items-center gap-2 transition border-indigo-600 text-indigo-600 whitespace-nowrap";
-        }
-
-        // Fungsi Universal Print / Cetak Bagian Tertentu
-        function cetakArea(areaId) {
-            const printContent = document.getElementById(areaId).innerHTML;
-            const originalContent = document.body.innerHTML;
-
-            document.body.innerHTML = `
-                <div style="font-family: Arial, sans-serif; padding: 20px;">
-                    ${printContent}
-                </div>
-            `;
-            window.print();
-            document.body.innerHTML = originalContent;
-            window.location.reload(); 
-        }
-
-        // Isi semua dropdown kelas berdasarkan kelas yang diampu guru
-        function isiDropdownKelasSemua() {
-            const selectJurnal = document.getElementById('pilih-kelas-jurnal');
-            const selectAbsensi = document.getElementById('pilih-kelas-absensi-tab');
-            const selectNilai = document.getElementById('pilih-kelas-nilai');
-
-            const optionsHTML = `<option value="">-- Pilih Kelas --</option>` + 
-                (currentGuru.wali_kelas ? currentGuru.wali_kelas.split(',').map(k => `<option value="${k.trim()}">${k.trim()}</option>`).join('') : '');
-
-            selectJurnal.innerHTML = optionsHTML;
-            selectAbsensi.innerHTML = optionsHTML;
-            selectNilai.innerHTML = optionsHTML;
-        }
-
-        // ================= TAB 1: JURNAL & ABSENSI =================
-        async function muatSiswaUntukJurnal() {
-            const kelas = document.getElementById('pilih-kelas-jurnal').value;
-            const tbody = document.getElementById('tabel-jurnal-siswa-body');
-            const badgeTotal = document.getElementById('badge-total-siswa-jurnal');
-
-            if (!kelas) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-400 italic">Silakan pilih kelas terlebih dahulu.</td></tr>`;
-                badgeTotal.innerText = `Total: 0 Siswa`;
-                daftarSiswaJurnal = [];
-                return;
-            }
-
-            tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-400 italic">Memuat data siswa kelas ${kelas}...</td></tr>`;
-
-            try {
-                const res = await fetch(`${SUPABASE_URL}presensi?kelas=eq.${encodeURIComponent(kelas)}&select=*`, {
-                    headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
-                });
-                const data = await res.json();
-                daftarSiswaJurnal = data;
-                badgeTotal.innerText = `Total: ${data.length} Siswa`;
-
-                if (data.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-rose-500 italic">Belum ada database siswa untuk kelas ini. Upload via Modul Guru.</td></tr>`;
-                    return;
-                }
-
-                tbody.innerHTML = "";
-                data.forEach((s, idx) => {
-                    tbody.innerHTML += `
-                        <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
-                            <td class="p-3">${idx + 1}</td>
-                            <td class="p-3 font-mono text-slate-600">${s.nis}</td>
-                            <td class="p-3 font-semibold text-slate-800">${s.nama}</td>
-                            <td class="p-3 text-center">
-                                <select onchange="daftarSiswaJurnal[${idx}].status = this.value" class="border border-slate-300 rounded-md p-1.5 text-xs font-semibold bg-white focus:ring-2 focus:ring-indigo-500">
-                                    <option value="Hadir" ${s.status === 'Hadir' ? 'selected' : ''}>Hadir</option>
-                                    <option value="Sakit" ${s.status === 'Sakit' ? 'selected' : ''}>Sakit</option>
-                                    <option value="Izin" ${s.status === 'Izin' ? 'selected' : ''}>Izin</option>
-                                    <option value="Alfa" ${s.status === 'Alfa' ? 'selected' : ''}>Alfa</option>
-                                </select>
-                            </td>
-                        </tr>
-                    `;
-                });
-            } catch (err) {
-                console.error(err);
-                tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-rose-500">Gagal memuat data siswa.</td></tr>`;
-            }
-        }
-
-        async function simpanJurnalHarian() {
-            const editId = document.getElementById('edit-jurnal-id').value;
-            const kelas = document.getElementById('pilih-kelas-jurnal').value;
-            const tanggal = document.getElementById('input-tanggal-jurnal').value;
-            const mapel = document.getElementById('jurnal-mapel').value;
-            const materiPokok = document.getElementById('jurnal-materi-pokok').value.trim();
-            const materiInti = document.getElementById('jurnal-materi-inti').value.trim();
-            const keterangan = document.getElementById('jurnal-keterangan-teks').value.trim();
-
-            if (!kelas || !materiPokok || !materiInti) {
-                alert("Kelas, Tanggal, Materi Pokok, dan Materi Inti wajib diisi!");
-                return;
-            }
-
-            try {
-                const jurnalPayload = {
-                    tanggal: tanggal,
-                    kelas: kelas,
-                    mapel: mapel,
-                    materi_pokok: materiPokok,
-                    materi_inti: materiInti,
-                    keterangan: keterangan,
-                    guru_pengampu: currentGuru.nama
-                };
-
-                let resJurnal;
-                if (editId) {
-                    resJurnal = await fetch(`${SUPABASE_URL}jurnal_kbm?id=eq.${editId}`, {
-                        method: "PATCH",
-                        headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY, "Content-Type": "application/json", "Prefer": "return=minimal" },
-                        body: JSON.stringify(jurnalPayload)
-                    });
-                } else {
-                    resJurnal = await fetch(`${SUPABASE_URL}jurnal_kbm`, {
-                        method: "POST",
-                        headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY, "Content-Type": "application/json", "Prefer": "return=minimal" },
-                        body: JSON.stringify(jurnalPayload)
-                    });
-                }
-
-                if (!resJurnal.ok) throw new Error("Gagal menyimpan rekap jurnal.");
-
-                for (let s of daftarSiswaJurnal) {
-                    await fetch(`${SUPABASE_URL}presensi?id=eq.${s.id}`, {
-                        method: "PATCH",
-                        headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY, "Content-Type": "application/json", "Prefer": "return=minimal" },
-                        body: JSON.stringify({ status: s.status, tanggal: tanggal })
-                    });
-                }
-
-                alert(editId ? "Jurnal berhasil diperbarui!" : "Jurnal & Presensi berhasil disimpan!");
-                resetFormJurnal();
-                muatRekapJurnal();
-            } catch (err) {
-                console.error(err);
-                alert("Terjadi kesalahan saat menyimpan jurnal.");
-            }
-        }
-
-        async function muatRekapJurnal() {
-            const tbody = document.getElementById('tabel-rekap-jurnal-body');
-            try {
-                const res = await fetch(`${SUPABASE_URL}jurnal_kbm?guru_pengampu=eq.${encodeURIComponent(currentGuru.nama)}&order=tanggal.desc&select=*`, {
-                    headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
-                });
-                const data = await res.json();
-
-                if (data.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400 italic">Belum ada rekap jurnal yang tersimpan.</td></tr>`;
-                    return;
-                }
-
-                tbody.innerHTML = "";
-                data.forEach((j) => {
-                    tbody.innerHTML += `
-                        <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
-                            <td class="p-3 font-semibold text-indigo-600">${j.tanggal}</td>
-                            <td class="p-3 font-semibold">${j.kelas}</td>
-                            <td class="p-3 font-medium text-slate-800">${j.materi_pokok}</td>
-                            <td class="p-3 text-slate-600">${j.materi_inti}</td>
-                            <td class="p-3 text-slate-500">${j.keterangan || '-'}</td>
-                            <td class="p-3 text-center space-x-1 whitespace-nowrap no-print">
-                                <button onclick='editJurnal(${JSON.stringify(j)})' class="bg-amber-500 hover:bg-amber-600 text-white px-2.5 py-1 rounded text-[11px] font-semibold transition">
-                                    <i class="fa-solid fa-pen-to-square"></i> Edit
-                                </button>
-                                <button onclick="hapusJurnal(${j.id})" class="bg-rose-500 hover:bg-rose-600 text-white px-2.5 py-1 rounded text-[11px] font-semibold transition">
-                                    <i class="fa-solid fa-trash"></i> Hapus
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            } catch (err) {
-                console.error(err);
-                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-rose-500">Gagal memuat rekap jurnal.</td></tr>`;
-            }
-        }
-
-        function editJurnal(j) {
-            document.getElementById('edit-jurnal-id').value = j.id;
-            document.getElementById('input-tanggal-jurnal').value = j.tanggal;
-            document.getElementById('pilih-kelas-jurnal').value = j.kelas;
-            document.getElementById('jurnal-materi-pokok').value = j.materi_pokok;
-            document.getElementById('jurnal-materi-inti').value = j.materi_inti;
-            document.getElementById('jurnal-keterangan-teks').value = j.keterangan || '';
+        // Tampil / Sembunyikan Pilihan Wali Kelas
+        function toggleOpsiWaliKelas() {
+            const statusWali = document.querySelector('input[name="status-wali"]:checked').value;
+            const wrapper = document.getElementById('wrapper-pilihan-walikelas');
             
-            document.getElementById('jurnal-form-title').innerHTML = `<i class="fa-solid fa-pen-to-square text-amber-600"></i> Edit Jurnal KBM (ID: ${j.id})`;
-            document.getElementById('btn-batal-edit').classList.remove('hidden');
-
-            muatSiswaUntukJurnal();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (statusWali === 'ya') {
+                wrapper.classList.remove('hidden');
+            } else {
+                wrapper.classList.add('hidden');
+            }
         }
 
-        function resetFormJurnal() {
-            document.getElementById('edit-jurnal-id').value = '';
-            document.getElementById('jurnal-materi-pokok').value = '';
-            document.getElementById('jurnal-materi-inti').value = '';
-            document.getElementById('jurnal-keterangan-teks').value = '';
-            document.getElementById('pilih-kelas-jurnal').value = '';
-            document.getElementById('tabel-jurnal-siswa-body').innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-400 italic">Silakan pilih kelas terlebih dahulu pada panel di samping.</td></tr>`;
-            document.getElementById('badge-total-siswa-jurnal').innerText = `Total: 0 Siswa`;
-            document.getElementById('jurnal-form-title').innerHTML = `<i class="fa-solid fa-pen-nib text-indigo-600"></i> Detail Kurikulum KBM`;
-            document.getElementById('btn-batal-edit').classList.add('hidden');
+        // Tambah kelas ke daftar pilihan guru secara interaktif
+        function tambahDaftarKelasGuru() {
+            const tingkat = document.getElementById('input-pilih-tingkat').value;
+            const jurusan = document.getElementById('input-pilih-jurusan').value;
+            const rombel = document.getElementById('input-pilih-rombel').value;
+            
+            const kelasFormat = `${tingkat}-${jurusan}-${rombel}`;
+
+            if (daftarKelasPilihanGuru.includes(kelasFormat)) {
+                alert(`Kelas ${kelasFormat} sudah ada dalam daftar.`);
+                return;
+            }
+
+            daftarKelasPilihanGuru.push(kelasFormat);
+            renderBadgeKelasGuru();
         }
 
-        async function hapusJurnal(id) {
-            if (!confirm("Apakah Anda yakin ingin menghapus rekap jurnal ini?")) return;
+        // Hapus kelas dari daftar pilihan guru
+        function hapusKelasGuru(index) {
+            daftarKelasPilihanGuru.splice(index, 1);
+            renderBadgeKelasGuru();
+        }
+
+        // Tampilkan badge kelas di form pendaftaran
+        function renderBadgeKelasGuru() {
+            const container = document.getElementById('container-badge-kelas');
+            if (daftarKelasPilihanGuru.length === 0) {
+                container.innerHTML = `<span class="text-[11px] text-slate-400 italic">Belum ada kelas mapel yang ditambahkan.</span>`;
+                return;
+            }
+
+            container.innerHTML = "";
+            daftarKelasPilihanGuru.forEach((kls, idx) => {
+                container.innerHTML += `
+                    <span class="bg-amber-100 text-amber-800 border border-amber-200 text-xs px-2.5 py-1 rounded-md font-medium flex items-center gap-1.5 shadow-sm">
+                        ${kls} 
+                        <button type="button" onclick="hapusKelasGuru(${idx})" class="text-amber-600 hover:text-rose-600 font-bold ml-1"><i class="fa-solid fa-xmark"></i></button>
+                    </span>
+                `;
+            });
+        }
+
+        // Simpan Akun Baru atau Perbarui Akun Guru yang Diedit
+        async function simpanAtauPerbaruiAkunGuru() {
+            const idEdit = document.getElementById('edit-id-guru').value;
+            const nama = document.getElementById('reg-nama-guru').value.trim();
+            const nip = document.getElementById('reg-nip-guru').value.trim();
+            const password = document.getElementById('reg-password-guru').value.trim();
+            const tugas = document.getElementById('reg-tugas-guru').value.trim();
+            const adminPasswordInput = document.getElementById('reg-admin-password').value.trim();
+
+            const statusWali = document.querySelector('input[name="status-wali"]:checked').value;
+            let waliKelasVal = null;
+            if (statusWali === 'ya') {
+                const wTingkat = document.getElementById('input-wali-tingkat').value;
+                const wJurusan = document.getElementById('input-wali-jurusan').value;
+                const wRombel = document.getElementById('input-wali-rombel').value;
+                waliKelasVal = `${wTingkat}-${wJurusan}-${wRombel}`;
+            }
+
+            if (!nama || !nip || !password) {
+                alert("Nama lengkap, NIP/ID, dan Password wajib diisi!");
+                return;
+            }
+
+            if (adminPasswordInput !== "adminsmk123") {
+                alert("Kode Verifikasi Admin salah! Masukkan password admin yang benar (adminsmk123).");
+                return;
+            }
+
+            const kelasDiampuString = daftarKelasPilihanGuru.join(", ");
+
             try {
-                const res = await fetch(`${SUPABASE_URL}jurnal_kbm?id=eq.${id}`, {
-                    method: "DELETE",
-                    headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
-                });
-                if (res.ok) {
-                    alert("Jurnal berhasil dihapus.");
-                    muatRekapJurnal();
+                let response;
+                if (!idEdit) {
+                    // Mode Tambah Baru (POST)
+                    response = await fetch(SUPABASE_URL + "guru", {
+                        method: "POST",
+                        headers: {
+                            "apikey": SUPABASE_KEY,
+                            "Authorization": "Bearer " + SUPABASE_KEY,
+                            "Content-Type": "application/json",
+                            "Prefer": "return=minimal"
+                        },
+                        body: JSON.stringify({ 
+                            nama, 
+                            nip, 
+                            password, 
+                            tugas, 
+                            kelas_diampu: kelasDiampuString, 
+                            wali_kelas: waliKelasVal 
+                        })
+                    });
                 } else {
-                    alert("Gagal menghapus jurnal.");
-                }
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        // ================= TAB 2: ABSENSI KELAS =================
-        async function muatRekapAbsensiTab() {
-            const kelas = document.getElementById('pilih-kelas-absensi-tab').value;
-            const tbody = document.getElementById('tabel-rekap-absensi-body');
-
-            if (!kelas) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400 italic">Pilih kelas di atas untuk melihat rekap absensi.</td></tr>`;
-                return;
-            }
-
-            try {
-                const res = await fetch(`${SUPABASE_URL}presensi?kelas=eq.${encodeURIComponent(kelas)}&select=*`, {
-                    headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
-                });
-                const data = await res.json();
-                
-                if (data.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400 italic">Tidak ada data siswa.</td></tr>`;
-                    return;
+                    // Mode Perbarui / Edit (PATCH)
+                    response = await fetch(`${SUPABASE_URL}guru?id=eq.${idEdit}`, {
+                        method: "PATCH",
+                        headers: {
+                            "apikey": SUPABASE_KEY,
+                            "Authorization": "Bearer " + SUPABASE_KEY,
+                            "Content-Type": "application/json",
+                            "Prefer": "return=minimal"
+                        },
+                        body: JSON.stringify({ 
+                            nama, 
+                            nip, 
+                            password, 
+                            tugas, 
+                            kelas_diampu: kelasDiampuString, 
+                            wali_kelas: waliKelasVal 
+                        })
+                    });
                 }
 
-                tbody.innerHTML = "";
-                data.forEach((s, idx) => {
-                    tbody.innerHTML += `
-                        <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
-                            <td class="p-3">${idx + 1}</td>
-                            <td class="p-3 font-mono text-slate-600">${s.nis}</td>
-                            <td class="p-3 font-semibold text-slate-800">${s.nama}</td>
-                            <td class="p-3">${s.kelas}</td>
-                            <td class="p-3 text-center font-bold text-indigo-600">${s.status || 'Hadir'}</td>
-                        </tr>
-                    `;
-                });
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        // ================= TAB 3: DAFTAR NILAI =================
-        async function muatSiswaUntukNilai() {
-            const kelas = document.getElementById('pilih-kelas-nilai').value;
-            const tbody = document.getElementById('tabel-nilai-siswa-body');
-
-            if (!kelas) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400 italic">Pilih kelas terlebih dahulu.</td></tr>`;
-                daftarSiswaNilai = [];
-                return;
-            }
-
-            try {
-                const res = await fetch(`${SUPABASE_URL}presensi?kelas=eq.${encodeURIComponent(kelas)}&select=*`, {
-                    headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
-                });
-                const data = await res.json();
-                daftarSiswaNilai = data;
-
-                tbody.innerHTML = "";
-                data.forEach((s, idx) => {
-                    tbody.innerHTML += `
-                        <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
-                            <td class="p-3">${idx + 1}</td>
-                            <td class="p-3 font-mono text-slate-600">${s.nis}</td>
-                            <td class="p-3 font-semibold text-slate-800">${s.nama}</td>
-                            <td class="p-3">${s.kelas}</td>
-                            <td class="p-3 text-center">
-                                <input type="number" min="0" max="100" placeholder="0-100" onchange="daftarSiswaNilai[${idx}].nilai_angka = this.value" class="border border-slate-300 rounded-md p-1.5 text-xs text-center w-24 font-bold text-amber-700 bg-amber-50/50">
-                            </td>
-                        </tr>
-                    `;
-                });
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        async function simpanDaftarNilai() {
-            const kelas = document.getElementById('pilih-kelas-nilai').value;
-            const materiPokok = document.getElementById('nilai-materi-pokok').value.trim();
-            const tugasMateri = document.getElementById('nilai-tugas-materi').value.trim();
-
-            if (!kelas || !materiPokok || !tugasMateri) {
-                alert("Kelas, Materi Pokok, dan Tugas/Bab wajib diisi!");
-                return;
-            }
-
-            try {
-                const payload = daftarSiswaNilai.map(s => ({
-                    nis: s.nis,
-                    nama: s.nama,
-                    kelas: s.kelas,
-                    materi_pokok: materiPokok,
-                    tugas_materi: tugasMateri,
-                    nilai: Number(s.nilai_angka || 0),
-                    guru_pengampu: currentGuru.nama
-                }));
-
-                const res = await fetch(`${SUPABASE_URL}nilai`, {
-                    method: "POST",
-                    headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY, "Content-Type": "application/json", "Prefer": "return=minimal" },
-                    body: JSON.stringify(payload)
-                });
-
-                if (res.ok) {
-                    alert("Daftar nilai siswa berhasil disimpan ke database!");
+                if (response.ok) {
+                    alert(idEdit ? `Berhasil memperbarui data guru "${nama}".` : `Berhasil mendaftarkan akun guru "${nama}".`);
+                    resetFormGuru();
+                    muatDataGuru();
                 } else {
-                    alert("Gagal menyimpan daftar nilai.");
+                    const err = await response.json();
+                    alert("Gagal menyimpan ke Supabase: " + (err.message || response.statusText));
                 }
-            } catch (err) {
-                console.error(err);
+            } catch (error) {
+                console.error(error);
                 alert("Terjadi kesalahan jaringan.");
             }
         }
 
-        // ================= TAB 4: MODE WALI KELAS =================
-        async function muatDataWaliKelas() {
-            const title = document.getElementById('walikelas-title');
-            const desc = document.getElementById('walikelas-desc');
-            const tbody = document.getElementById('tabel-perwalian-body');
-            const badgeTotal = document.getElementById('badge-total-perwalian');
-            const selectMapel = document.getElementById('filter-mapel-walikelas');
+        // Muat Data Guru ke Form untuk Diedit
+        function siapkanEditGuru(id) {
+            const guru = daftarGuruGlobal.find(g => g.id === id);
+            if (!guru) return;
 
-            const kelasPerwalian = currentGuru.wali_kelas ? currentGuru.wali_kelas.split(',')[0].trim() : "";
+            document.getElementById('edit-id-guru').value = guru.id;
+            document.getElementById('reg-nama-guru').value = guru.nama;
+            document.getElementById('reg-nip-guru').value = guru.nip;
+            document.getElementById('reg-password-guru').value = guru.password;
+            document.getElementById('reg-tugas-guru').value = guru.tugas || '';
+            document.getElementById('reg-admin-password').value = 'adminsmk123'; 
 
-            if (!kelasPerwalian) {
-                title.innerText = "Mode Wali Kelas (Tidak Ada Perwalian)";
-                desc.innerText = "Akun Anda terdaftar sebagai guru pengampu, bukan sebagai wali kelas.";
-                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 italic">Anda tidak memiliki kelas perwalian terdaftar.</td></tr>`;
-                badgeTotal.innerText = `Total: 0 Siswa`;
-                return;
-            }
+            // Pecah string kelas yang diampu (mendukung kolom kelas_diampu atau wali_kelas lama jika ada)
+            const sumberKelas = guru.kelas_diampu || guru.wali_kelas || '';
+            daftarKelasPilihanGuru = sumberKelas ? sumberKelas.split(',').map(k => k.trim()).filter(k => k) : [];
+            renderBadgeKelasGuru();
 
-            title.innerText = `Mode Wali Kelas: ${kelasPerwalian}`;
-            desc.innerText = `Daftar lengkap siswa, rekapitulasi nilai guru lain, jurnal, serta catatan khusus perwalian Anda.`;
-
-            try {
-                const [resSiswa, resCatatan, resNilaiAll, resJurnalAll] = await Promise.all([
-                    fetch(`${SUPABASE_URL}presensi?kelas=eq.${encodeURIComponent(kelasPerwalian)}&select=*`, {
-                        headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
-                    }),
-                    fetch(`${SUPABASE_URL}catatan_walikelas?kelas=eq.${encodeURIComponent(kelasPerwalian)}&select=*`, {
-                        headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
-                    }),
-                    fetch(`${SUPABASE_URL}nilai?kelas=eq.${encodeURIComponent(kelasPerwalian)}&select=*`, {
-                        headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
-                    }),
-                    fetch(`${SUPABASE_URL}jurnal_kbm?kelas=eq.${encodeURIComponent(kelasPerwalian)}&select=*`, {
-                        headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
-                    })
-                ]);
-
-                const dataSiswa = await resSiswa.json();
-                const dataCatatan = await resCatatan.json();
-                cacheDataNilaiKelas = await resNilaiAll.json();
-                const dataJurnalAll = await resJurnalAll.json();
-
-                badgeTotal.innerText = `Total: ${dataSiswa.length} Siswa`;
-
-                // Ambil daftar unik nama guru pengampu / mapel dari data nilai
-                const mapelSet = new Set();
-                cacheDataNilaiKelas.forEach(n => {
-                    if (n.guru_pengampu) mapelSet.add(n.guru_pengampu);
-                });
-
-                selectMapel.innerHTML = `<option value="">-- Pilih Mata Pelajaran / Guru Lain --</option>`;
-                mapelSet.forEach(m => {
-                    selectMapel.innerHTML += `<option value="${m}">${m}</option>`;
-                });
-
-                // Tampilkan Jurnal Pengajar Lain
-                renderJurnalWaliKelas(dataJurnalAll);
-
-                // Render tabel siswa perwalian awal (tanpa sorotan nilai khusus)
-                renderTabelPerwalian(dataSiswa, dataCatatan, null);
-
-            } catch (err) {
-                console.error(err);
-                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-rose-500">Gagal memuat data perwalian.</td></tr>`;
-            }
-        }
-
-        function renderJurnalWaliKelas(jurnalList) {
-            const tbody = document.getElementById('tabel-jurnal-walikelas-body');
-            if (jurnalList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400 italic">Belum ada jurnal pengajar lain untuk kelas ini.</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = "";
-            jurnalList.forEach(j => {
-                tbody.innerHTML += `
-                    <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
-                        <td class="p-3 font-semibold text-emerald-700">${j.tanggal}</td>
-                        <td class="p-3 font-bold text-slate-800">${j.guru_pengampu}</td>
-                        <td class="p-3">${j.mapel || '-'}</td>
-                        <td class="p-3"><strong>${j.materi_pokok}</strong>: ${j.materi_inti}</td>
-                        <td class="p-3 text-slate-500">${j.keterangan || '-'}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        async function muatRekapMapelWaliKelas() {
-            const selectedGuruMapel = document.getElementById('filter-mapel-walikelas').value;
-            const kelasPerwalian = currentGuru.wali_kelas ? currentGuru.wali_kelas.split(',')[0].trim() : "";
-            const thNilai = document.getElementById('th-label-nilai-mapel');
-            const boxStat = document.getElementById('box-statistik-mapel');
-
-            if (!selectedGuruMapel) {
-                thNilai.innerText = "Nilai Mapel Terpilih";
-                boxStat.classList.add('hidden');
-                muatDataWaliKelas();
-                return;
-            }
-
-            thNilai.innerText = `Nilai (${selectedGuruMapel})`;
-            boxStat.classList.remove('hidden');
-
-            try {
-                const [resSiswa, resCatatan] = await Promise.all([
-                    fetch(`${SUPABASE_URL}presensi?kelas=eq.${encodeURIComponent(kelasPerwalian)}&select=*`, {
-                        headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
-                    }),
-                    fetch(`${SUPABASE_URL}catatan_walikelas?kelas=eq.${encodeURIComponent(kelasPerwalian)}&select=*`, {
-                        headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
-                    })
-                ]);
-
-                const dataSiswa = await resSiswa.json();
-                const dataCatatan = await resCatatan.json();
-
-                // Filter nilai berdasarkan guru pengampu / mapel terpilih
-                const filteredNilai = cacheDataNilaiKelas.filter(n => n.guru_pengampu === selectedGuruMapel);
+            // Atur status wali kelas
+            if (guru.wali_kelas && guru.wali_kelas.trim() !== "") {
+                document.querySelector('input[name="status-wali"][value="ya"]').checked = true;
+                document.getElementById('wrapper-pilihan-walikelas').classList.remove('hidden');
                 
-                // Hitung statistik persentase
-                let totalNilaiAngka = 0;
-                let countTuntas = 0;
-                let countRemedial = 0;
-                let validCount = 0;
-
-                filteredNilai.forEach(n => {
-                    totalNilaiAngka += Number(n.nilai || 0);
-                    validCount++;
-                    if (Number(n.nilai || 0) >= 75) countTuntas++;
-                    else countRemedial++;
-                });
-
-                const rataRata = validCount > 0 ? (totalNilaiAngka / validCount).toFixed(1) : "0.0";
-                const persentaseTuntas = validCount > 0 ? Math.round((countTuntas / validCount) * 100) : 0;
-                const persentaseRemedial = validCount > 0 ? Math.round((countRemedial / validCount) * 100) : 0;
-
-                document.getElementById('stat-rata-rata').innerText = rataRata;
-                document.getElementById('stat-tuntas').innerText = `${countTuntas} Siswa (${persentaseTuntas}%)`;
-                document.getElementById('stat-remedial').innerText = `${countRemedial} Siswa (${persentaseRemedial}%)`;
-
-                renderTabelPerwalian(dataSiswa, dataCatatan, filteredNilai);
-
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        function renderTabelPerwalian(dataSiswa, dataCatatan, nilaiMapelList) {
-            const tbody = document.getElementById('tabel-perwalian-body');
-            const catatanMap = {};
-            dataCatatan.forEach(c => { catatanMap[c.nis] = c.catatan; });
-
-            // Buat map nilai berdasarkan NIS jika mapel disorot
-            const nilaiMap = {};
-            if (nilaiMapelList) {
-                nilaiMapelList.forEach(n => { nilaiMap[n.nis] = n.nilai; });
+                const parts = guru.wali_kelas.split('-');
+                if (parts.length >= 3) {
+                    document.getElementById('input-wali-tingkat').value = parts[0];
+                    document.getElementById('input-wali-jurusan').value = parts[1];
+                    document.getElementById('input-wali-rombel').value = parts[2];
+                }
+            } else {
+                document.querySelector('input[name="status-wali"][value="bukan"]').checked = true;
+                document.getElementById('wrapper-pilihan-walikelas').classList.add('hidden');
             }
 
-            tbody.innerHTML = "";
-            dataSiswa.forEach((s, idx) => {
-                const existingCatatan = catatanMap[s.nis] || '';
-                const nilaiVal = nilaiMapelList ? (nilaiMap[s.nis] !== undefined ? nilaiMap[s.nis] : '<span class="text-slate-400 italic">Belum Ada</span>') : '<span class="text-slate-400 italic">Pilih Mapel</span>';
+            // Ubah Tampilan Header Form jadi Mode Edit
+            document.getElementById('title-form-guru').innerText = `Perbarui Akun Guru: ${guru.nama}`;
+            document.getElementById('desc-form-guru').innerText = `Ubah informasi akun dan simpan pembaruan ke database.`;
+            document.getElementById('icon-form-header').className = "w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg shadow-sm";
+            document.getElementById('icon-form-i').className = "fa-solid fa-user-pen";
+            document.getElementById('btn-submit-guru').innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Perbarui Akun Guru`;
+            document.getElementById('btn-batal-edit').classList.remove('hidden');
 
-                tbody.innerHTML += `
-                    <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
-                        <td class="p-3">${idx + 1}</td>
-                        <td class="p-3 font-mono text-slate-600">${s.nis}</td>
-                        <td class="p-3 font-semibold text-slate-800">${s.nama}</td>
-                        <td class="p-3">${s.kelas}</td>
-                        <td class="p-3 text-center font-bold text-emerald-700">${s.status || 'Hadir'}</td>
-                        <td class="p-3 text-center font-bold text-indigo-700">${nilaiVal}</td>
-                        <td class="p-3">
-                            <input type="text" id="catatan-${s.nis}" value="${existingCatatan}" placeholder="Ketik catatan siswa..." onblur="simpanCatatanSiswa('${s.nis}', '${s.kelas}')" class="w-full border border-slate-300 rounded p-1.5 text-xs focus:ring-2 focus:ring-emerald-500 bg-white">
-                        </td>
-                    </tr>
-                `;
-            });
+            window.scrollTo({ top: 400, behavior: 'smooth' });
         }
 
-        async function simpanCatatanSiswa(nis, kelas) {
-            const inputVal = document.getElementById(`catatan-${nis}`).value.trim();
+        // Batal Edit
+        function batalEditGuru() {
+            resetFormGuru();
+        }
+
+        function resetFormGuru() {
+            document.getElementById('edit-id-guru').value = '';
+            document.getElementById('reg-nama-guru').value = '';
+            document.getElementById('reg-nip-guru').value = '';
+            document.getElementById('reg-password-guru').value = '';
+            document.getElementById('reg-tugas-guru').value = '';
+            document.getElementById('reg-admin-password').value = '';
+            document.querySelector('input[name="status-wali"][value="bukan"]').checked = true;
+            document.getElementById('wrapper-pilihan-walikelas').classList.add('hidden');
+            daftarKelasPilihanGuru = [];
+            renderBadgeKelasGuru();
+
+            document.getElementById('title-form-guru').innerText = "Registrasi Akun Guru Baru";
+            document.getElementById('desc-form-guru').innerText = "Atur akun, mata pelajaran, kelas yang diampu, serta status wali kelas.";
+            document.getElementById('icon-form-header').className = "w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-lg shadow-sm";
+            document.getElementById('icon-form-i').className = "fa-solid fa-user-plus";
+            document.getElementById('btn-submit-guru').innerHTML = `<i class="fa-solid fa-user-check"></i> Simpan & Daftarkan Akun Guru`;
+            document.getElementById('btn-batal-edit').classList.add('hidden');
+        }
+
+        // Fungsi Login Guru Menuju Halaman Jurnal Guru
+        async function loginGuru() {
+            const nipInput = document.getElementById('login-nip').value.trim();
+            const passInput = document.getElementById('login-password').value.trim();
+
+            if (!nipInput || !passInput) {
+                alert("Masukkan NIP/ID dan Password Anda.");
+                return;
+            }
 
             try {
-                await fetch(`${SUPABASE_URL}catatan_walikelas`, {
-                    method: "POST",
-                    headers: { 
-                        "apikey": SUPABASE_KEY, 
-                        "Authorization": "Bearer " + SUPABASE_KEY, 
-                        "Content-Type": "application/json", 
-                        "Prefer": "resolution=merge-duplicates,return=minimal" 
-                    },
-                    body: JSON.stringify({
-                        nis: nis,
-                        kelas: kelas,
-                        catatan: inputVal,
-                        updated_at: new Date().toISOString()
-                    })
+                const response = await fetch(`${SUPABASE_URL}guru?nip=eq.${encodeURIComponent(nipInput)}&select=*`, {
+                    headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
                 });
-            } catch (err) {
-                console.error("Gagal menyimpan catatan otomatis:", err);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.length === 0) {
+                        alert("NIP / ID Pengajar tidak ditemukan.");
+                        return;
+                    }
+
+                    const guru = data[0];
+                    if (guru.password === passInput) {
+                        localStorage.setItem('session_guru', JSON.stringify(guru));
+                        alert(`Login Berhasil! Selamat datang, ${guru.nama}.`);
+                        window.location.href = "jurnal-guru.html";
+                    } else {
+                        alert("Password salah! Silakan coba kembali.");
+                    }
+                } else {
+                    alert("Gagal memverifikasi data login.");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Terjadi kesalahan koneksi jaringan.");
             }
         }
 
-        function logoutGuru() {
-            if (confirm("Apakah Anda ingin keluar dari sesi?")) {
-                localStorage.removeItem('session_guru');
-                window.location.href = "modul-guru.html";
+        // Menampilkan Data Guru dari Supabase ke Tabel
+        async function muatDataGuru() {
+            const tbody = document.getElementById('tabel-guru-body');
+            tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-400 italic">Memuat data guru dari database...</td></tr>`;
+
+            try {
+                const response = await fetch(SUPABASE_URL + "guru?select=*&order=id.desc", {
+                    headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    daftarGuruGlobal = data;
+
+                    if (data.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-400 italic">Belum ada data guru terdaftar.</td></tr>`;
+                        return;
+                    }
+
+                    tbody.innerHTML = "";
+                    data.forEach((guru, index) => {
+                        const kelasMapel = guru.kelas_diampu || guru.wali_kelas || '-';
+                        const statusWali = (guru.wali_kelas && guru.wali_kelas.trim() !== "") 
+                            ? `<span class="bg-amber-50 text-amber-700 px-2 py-1 rounded font-medium">${guru.wali_kelas}</span>` 
+                            : `<span class="text-slate-400 italic">Bukan Wali Kelas</span>`;
+
+                        tbody.innerHTML += `
+                            <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
+                                <td class="p-3">${index + 1}</td>
+                                <td class="p-3 font-semibold text-slate-800">${guru.nama}</td>
+                                <td class="p-3 text-slate-600">${guru.nip}</td>
+                                <td class="p-3 text-slate-600">${guru.tugas || '-'}</td>
+                                <td class="p-3"><span class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded font-medium">${kelasMapel}</span></td>
+                                <td class="p-3">${statusWali}</td>
+                                <td class="p-3 text-center">
+                                    <button onclick="siapkanEditGuru(${guru.id})" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-md font-semibold text-xs transition border border-indigo-200">
+                                        <i class="fa-solid fa-pen-to-square mr-1"></i> Edit Akun
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-rose-500">Gagal memuat data dari database.</td></tr>`;
+                }
+            } catch (error) {
+                console.error(error);
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-rose-500">Terjadi kesalahan koneksi jaringan.</td></tr>`;
+            }
+        }
+
+        // Upload Master Data Siswa via Excel
+        function prosesUploadDataSiswa() {
+            const tingkat = document.getElementById('target-tingkat').value;
+            const jurusan = document.getElementById('target-jurusan').value;
+            const rombel = document.getElementById('target-rombel').value;
+            const fileInput = document.getElementById('file-excel-siswa');
+
+            if (fileInput.files.length === 0) {
+                alert("Pilih file Excel siswa terlebih dahulu.");
+                return;
+            }
+
+            const kelasGabung = `${tingkat}-${jurusan}-${rombel}`;
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const jsonResult = XLSX.utils.sheet_to_json(worksheet);
+
+                    if (jsonResult.length === 0) {
+                        alert("File Excel kosong atau format kolom tidak terbaca.");
+                        return;
+                    }
+
+                    const payloadData = jsonResult.map(row => ({
+                        nomor_induk: String(row.nomor_induk || row.NOMOR_INDUK || row.nis || row.NIS || row.Nis || "-"),
+                        nama: String(row.nama || row.Nama || row.NAMA || "Tanpa Nama"),
+                        kelas: kelasGabung,
+                        status: "Hadir"
+                    }));
+
+                    const response = await fetch(SUPABASE_URL + "presensi", {
+                        method: "POST",
+                        headers: {
+                            "apikey": SUPABASE_KEY,
+                            "Authorization": "Bearer " + SUPABASE_KEY,
+                            "Content-Type": "application/json",
+                            "Prefer": "return=minimal"
+                        },
+                        body: JSON.stringify(payloadData)
+                    });
+
+                    if (response.ok) {
+                        alert(`Sukses! ${payloadData.length} data siswa kelas ${kelasGabung} berhasil diunggah.`);
+                        document.getElementById('file-excel-siswa').value = '';
+                    } else {
+                        const err = await response.json();
+                        alert("Gagal mengunggah ke Supabase: " + (err.message || response.statusText));
+                    }
+
+                } catch (err) {
+                    console.error(err);
+                    alert("Terjadi kesalahan saat memproses berkas Excel.");
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Hapus Data Absensi / Siswa Berdasarkan Kelas Terpilih (Reset)
+        async function hapusDataSiswaPerKelas() {
+            const tingkat = document.getElementById('target-tingkat').value;
+            const jurusan = document.getElementById('target-jurusan').value;
+            const rombel = document.getElementById('target-rombel').value;
+            const kelasTarget = `${tingkat}-${jurusan}-${rombel}`;
+
+            if (!confirm(`Apakah Anda yakin ingin MENGHAPUS SEMUA data absensi/siswa untuk kelas ${kelasTarget}? Aksi ini tidak dapat dibatalkan.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}presensi?kelas=eq.${encodeURIComponent(kelasTarget)}`, {
+                    method: "DELETE",
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization": "Bearer " + SUPABASE_KEY,
+                        "Prefer": "return=minimal"
+                    }
+                });
+
+                if (response.ok) {
+                    alert(`Semua data siswa untuk kelas ${kelasTarget} berhasil dihapus dari database.`);
+                } else {
+                    alert("Gagal menghapus data dari database.");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Terjadi kesalahan koneksi jaringan.");
             }
         }
     </script>
