@@ -39,25 +39,21 @@
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
 
-    <!-- Header / Navigasi Atas Diperbaiki -->
+    <!-- Header / Navigasi Jurnal -->
     <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
-            <div class="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-start">
-                <div class="flex items-center space-x-3">
-                    <img src="logo-alhuda-transparan.png" alt="Logo SMK Al-Huda" class="w-10 h-10 object-contain bg-white rounded-full p-1 shadow" onerror="this.src='https://via.placeholder.com/40'">
-                    <div>
-                        <h1 class="font-bold text-sm md:text-base leading-tight tracking-wide">PORTAL GURU & AKADEMIK</h1>
-                        <p class="text-[11px] text-emerald-400 font-medium" id="info-nama-guru">Memuat profil pengajar...</p>
-                    </div>
+        <div class="max-w-7xl mx-auto px-4 py-3.5 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <img src="logo-alhuda-transparan.png" alt="Logo SMK Al-Huda" class="w-10 h-10 object-contain bg-white rounded-full p-1 shadow" onerror="this.src='https://via.placeholder.com/40'">
+                <div>
+                    <h1 class="font-bold text-base md:text-lg leading-tight tracking-wide">PORTAL GURU & AKADEMIK</h1>
+                    <p class="text-[11px] text-emerald-400" id="info-nama-guru">Memuat profil pengajar...</p>
                 </div>
             </div>
-            
-            <!-- Tombol Navigasi Atas -->
-            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                <a href="modul-guru.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3.5 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5 border border-slate-700">
-                    <i class="fa-solid fa-arrow-left text-emerald-400"></i> <span>Modul Guru</span>
+            <div class="flex items-center gap-2">
+                <a href="modul-guru.html" class="bg-slate-800 hover:bg-slate-700 text-xs font-semibold px-3.5 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
+                    <i class="fa-solid fa-arrow-left"></i> <span>Modul Guru</span>
                 </a>
-                <button onclick="logoutGuru()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
+                <button onclick="logoutGuru()" class="bg-rose-600 hover:bg-rose-700 text-xs font-semibold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
                     <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
                 </button>
             </div>
@@ -65,19 +61,19 @@
     </header>
 
     <!-- Menu Tab Navigasi Halaman Guru -->
-    <nav class="bg-white border-b border-slate-200 shadow-sm sticky top-[65px] sm:top-[61px] z-40">
-        <div class="max-w-7xl mx-auto px-4 flex space-x-2 sm:space-x-4 overflow-x-auto">
+    <nav class="bg-white border-b border-slate-200 shadow-sm sticky top-[65px] z-40">
+        <div class="max-w-7xl mx-auto px-4 flex space-x-4 overflow-x-auto">
             <button onclick="gantiTab('jurnal')" id="tab-btn-jurnal" class="py-3 px-4 border-b-2 font-semibold text-xs sm:text-sm flex items-center gap-2 transition border-indigo-600 text-indigo-600 whitespace-nowrap">
-                <i class="fa-solid fa-book-journal-whills"></i> <span>Jurnal Harian KBM</span>
+                <i class="fa-solid fa-book-journal-whills"><span>Jurnal Harian KBM</span></i>
             </button>
             <button onclick="gantiTab('absensi')" id="tab-btn-absensi" class="py-3 px-4 border-b-2 border-transparent font-medium text-slate-600 hover:text-slate-900 text-xs sm:text-sm flex items-center gap-2 transition whitespace-nowrap">
-                <i class="fa-solid fa-clipboard-user"></i> <span>Absensi Kelas</span>
+                <i class="fa-solid fa-clipboard-user"><span>Absensi Kelas</span></i>
             </button>
             <button onclick="gantiTab('nilai')" id="tab-btn-nilai" class="py-3 px-4 border-b-2 border-transparent font-medium text-slate-600 hover:text-slate-900 text-xs sm:text-sm flex items-center gap-2 transition whitespace-nowrap">
-                <i class="fa-solid fa-star-half-stroke"></i> <span>Daftar Nilai Siswa</span>
+                <i class="fa-solid fa-star-half-stroke"><span>Daftar Nilai Siswa</span></i>
             </button>
             <button onclick="gantiTab('walikelas')" id="tab-btn-walikelas" class="py-3 px-4 border-b-2 border-transparent font-medium text-slate-600 hover:text-slate-900 text-xs sm:text-sm flex items-center gap-2 transition whitespace-nowrap">
-                <i class="fa-solid fa-id-badge"></i> <span>Mode Wali Kelas</span>
+                <i class="fa-solid fa-id-badge"><span>Mode Wali Kelas</span></i>
             </button>
         </div>
     </nav>
@@ -447,13 +443,12 @@
         let cacheDataPresensiKelas = [];
 
         window.addEventListener('DOMContentLoaded', async () => {
-            // Memeriksa berbagai varian kunci sesi login yang mungkin digunakan
             const sessionData = localStorage.getItem('session_guru') || 
                                 localStorage.getItem('guru_login') || 
                                 localStorage.getItem('active_guru');
 
             if (!sessionData) {
-                alert("Sesi login tidak ditemukan. Silakan login terlebih dahulu melalui modul guru.");
+                alert("Sesi login tidak ditemukan. Silakan login terlebih dahulu.");
                 window.location.href = "modul-guru.html";
                 return;
             }
@@ -476,6 +471,13 @@
             await isiDropdownKelasSemua();
             muatRekapJurnal();
             muatDataWaliKelas();
+
+            // Cek jika ada perintah dari modul-guru untuk langsung membuka tab wali kelas
+            const targetTab = sessionStorage.getItem('buka_tab');
+            if (targetTab === 'walikelas') {
+                gantiTab('walikelas');
+                sessionStorage.removeItem('buka_tab');
+            }
         });
 
         function gantiTab(tabName) {
@@ -502,6 +504,7 @@
             window.location.reload(); 
         }
 
+        // FUNGSI UTAMA: Mengambil daftar kelas unik dari database Supabase (tabel presensi) & wali kelas
         async function isiDropdownKelasSemua() {
             const selectJurnal = document.getElementById('pilih-kelas-jurnal');
             const selectAbsensi = document.getElementById('pilih-kelas-absensi-tab');
@@ -526,7 +529,7 @@
                     });
                 }
             } catch (err) {
-                console.error("Gagal memuat daftar kelas otomatis:", err);
+                console.error("Gagal memuat daftar kelas dari database:", err);
             }
 
             let optionsHTML = `<option value="">-- Pilih Kelas --</option>`;
@@ -534,9 +537,9 @@
                 optionsHTML += `<option value="${k}">${k}</option>`;
             });
 
-            if(selectJurnal) selectJurnal.innerHTML = optionsHTML;
-            if(selectAbsensi) selectAbsensi.innerHTML = optionsHTML;
-            if(selectNilai) selectNilai.innerHTML = optionsHTML;
+            if (selectJurnal) selectJurnal.innerHTML = optionsHTML;
+            if (selectAbsensi) selectAbsensi.innerHTML = optionsHTML;
+            if (selectNilai) selectNilai.innerHTML = optionsHTML;
         }
 
         // ================= TAB 1: JURNAL & ABSENSI =================
@@ -983,7 +986,7 @@
 
         function renderTabelPerwalian(dataSiswa, dataCatatan, nilaiMapelList, selectedMapelName) {
             const tbody = document.getElementById('tabel-perwalian-body');
-            if (!tbody) return;
+            if(!tbody) return;
             const catatanMap = {};
             dataCatatan.forEach(c => { catatanMap[c.nis] = c.catatan; });
 
@@ -1019,9 +1022,7 @@
         }
 
         async function simpanCatatanSiswa(nis, kelas) {
-            const inputEl = document.getElementById(`catatan-${nis}`);
-            if(!inputEl) return;
-            const inputVal = inputEl.value.trim();
+            const inputVal = document.getElementById(`catatan-${nis}`).value.trim();
 
             try {
                 await fetch(`${SUPABASE_URL}catatan_walikelas`, {
@@ -1047,9 +1048,7 @@
         function logoutGuru() {
             if (confirm("Apakah Anda ingin keluar dari sesi?")) {
                 localStorage.removeItem('session_guru');
-                localStorage.removeItem('guru_login');
-                localStorage.removeItem('active_guru');
-                window.location.href = "index.html";
+                window.location.href = "modul-guru.html";
             }
         }
     </script>
