@@ -296,7 +296,7 @@
                             <th class="p-3">Mata Pelajaran</th>
                             <th class="p-3">Kelas Mapel Diampu</th>
                             <th class="p-3">Wali Kelas</th>
-                            <th class="p-3 text-center">Aksi / Edit</th>
+                            <th class="p-3 text-center">Aksi / Pengelolaan</th>
                         </tr>
                     </thead>
                     <tbody id="tabel-guru-body">
@@ -477,12 +477,10 @@
             document.getElementById('reg-tugas-guru').value = guru.tugas || '';
             document.getElementById('reg-admin-password').value = 'adminsmk123'; 
 
-            // Pecah string kelas yang diampu (mendukung kolom kelas_diampu atau wali_kelas lama jika ada)
-            const sumberKelas = guru.kelas_diampu || guru.wali_kelas || '';
+            const sumberKelas = guru.kelas_diampu || '';
             daftarKelasPilihanGuru = sumberKelas ? sumberKelas.split(',').map(k => k.trim()).filter(k => k) : [];
             renderBadgeKelasGuru();
 
-            // Atur status wali kelas
             if (guru.wali_kelas && guru.wali_kelas.trim() !== "") {
                 document.querySelector('input[name="status-wali"][value="ya"]').checked = true;
                 document.getElementById('wrapper-pilihan-walikelas').classList.remove('hidden');
@@ -498,7 +496,6 @@
                 document.getElementById('wrapper-pilihan-walikelas').classList.add('hidden');
             }
 
-            // Ubah Tampilan Header Form jadi Mode Edit
             document.getElementById('title-form-guru').innerText = `Perbarui Akun Guru: ${guru.nama}`;
             document.getElementById('desc-form-guru').innerText = `Ubah informasi akun dan simpan pembaruan ke database.`;
             document.getElementById('icon-form-header').className = "w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg shadow-sm";
@@ -507,6 +504,39 @@
             document.getElementById('btn-batal-edit').classList.remove('hidden');
 
             window.scrollTo({ top: 400, behavior: 'smooth' });
+        }
+
+        // Fungsi Hapus Akun Guru
+        async function hapusAkunGuru(id, namaGuru) {
+            const adminPass = prompt(`Konfirmasi Admin: Masukkan password admin (adminsmk123) untuk menghapus akun "${namaGuru}":`);
+            if (adminPass === null) return; // Dibatalkan
+
+            if (adminPass !== "adminsmk123") {
+                alert("Password admin salah! Penghapusan dibatalkan.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}guru?id=eq.${id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization": "Bearer " + SUPABASE_KEY,
+                        "Prefer": "return=minimal"
+                    }
+                });
+
+                if (response.ok) {
+                    alert(`Akun guru "${namaGuru}" berhasil dihapus dari database.`);
+                    muatDataGuru();
+                } else {
+                    const err = await response.json();
+                    alert("Gagal menghapus akun: " + (err.message || response.statusText));
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Terjadi kesalahan jaringan.");
+            }
         }
 
         // Batal Edit
@@ -594,7 +624,7 @@
 
                     tbody.innerHTML = "";
                     data.forEach((guru, index) => {
-                        const kelasMapel = guru.kelas_diampu || guru.wali_kelas || '-';
+                        const kelasMapel = guru.kelas_diampu || '-';
                         const statusWali = (guru.wali_kelas && guru.wali_kelas.trim() !== "") 
                             ? `<span class="bg-amber-50 text-amber-700 px-2 py-1 rounded font-medium">${guru.wali_kelas}</span>` 
                             : `<span class="text-slate-400 italic">Bukan Wali Kelas</span>`;
@@ -607,9 +637,12 @@
                                 <td class="p-3 text-slate-600">${guru.tugas || '-'}</td>
                                 <td class="p-3"><span class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded font-medium">${kelasMapel}</span></td>
                                 <td class="p-3">${statusWali}</td>
-                                <td class="p-3 text-center">
-                                    <button onclick="siapkanEditGuru(${guru.id})" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-md font-semibold text-xs transition border border-indigo-200">
-                                        <i class="fa-solid fa-pen-to-square mr-1"></i> Edit Akun
+                                <td class="p-3 text-center space-x-1">
+                                    <button onclick="siapkanEditGuru(${guru.id})" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-2.5 py-1.5 rounded-md font-semibold text-xs transition border border-indigo-200" title="Edit Akun">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    <button onclick="hapusAkunGuru(${guru.id}, '${guru.nama.replace(/'/g, "\\'")}')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 px-2.5 py-1.5 rounded-md font-semibold text-xs transition border border-rose-200" title="Hapus Akun">
+                                        <i class="fa-solid fa-trash-can"></i>
                                     </button>
                                 </td>
                             </tr>
