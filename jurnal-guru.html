@@ -6,6 +6,36 @@
     <title>Jurnal, Absensi & Nilai Pengajar - SMK Al-Huda Kediri</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styling khusus untuk mode Cetak / Print (Kop Surat & Sembunyikan Navigasi) -->
+    <style>
+        @media print {
+            body {
+                background-color: white !important;
+                color: black !important;
+            }
+            header, nav, .no-print, button {
+                display: none !important;
+            }
+            .print-area {
+                display: block !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+            table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+            }
+            th, td {
+                border: 1px solid #cbd5e1 !important;
+                padding: 6px 8px !important;
+                font-size: 11px !important;
+            }
+        }
+    </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
 
@@ -138,16 +168,35 @@
                 </div>
             </div>
 
-            <!-- Panel Rekapitulasi Jurnal Tersimpan di Bawah -->
-            <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4">
-                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                        <i class="fa-solid fa-rectangle-list text-indigo-600"></i> Rekapitulasi Jurnal KBM Anda
+            <!-- Panel Rekapitulasi Jurnal Tersimpan di Bawah (Dilengkapi Kop Surat & Tombol Print) -->
+            <div id="print-area-jurnal" class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4">
+                
+                <!-- KOP SURAT (Hanya tampil saat dicetak atau dilihat di rekap) -->
+                <div class="border-b-2 border-slate-800 pb-4 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <img src="logo-alhuda-transparan.png" alt="Logo" class="w-14 h-14 object-contain" onerror="this.src='https://via.placeholder.com/60'">
+                        <div>
+                            <h2 class="text-base md:text-lg font-bold tracking-wide text-slate-900 uppercase">SMK AL-HUDA KEDIRI</h2>
+                            <p class="text-[11px] text-slate-600">Jl. Pesantren No. 1 Bence, Kec. Mojoroto, Kota Kediri, Jawa Timur</p>
+                            <p class="text-[10px] text-indigo-700 font-semibold">REKAPITULASI JURNAL MENGAJAR HARIAN GURU</p>
+                        </div>
+                    </div>
+                    <div class="text-right no-print">
+                        <button onclick="cetakArea('print-area-jurnal')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-print"></i> Cetak Rekap Jurnal
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center pt-2">
+                    <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
+                        <i class="fa-solid fa-rectangle-list text-indigo-600"></i> Riwayat Jurnal KBM Anda
                     </h3>
-                    <button onclick="muatRekapJurnal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-rotate"></i> Muat Ulang Rekap
+                    <button onclick="muatRekapJurnal()" class="no-print bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-rotate"></i> Muat Ulang
                     </button>
                 </div>
+
                 <div class="overflow-x-auto border border-slate-200 rounded-lg">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
@@ -157,7 +206,7 @@
                                 <th class="p-3">Materi Pokok</th>
                                 <th class="p-3">Materi Inti / Pembahasan</th>
                                 <th class="p-3">Keterangan</th>
-                                <th class="p-3 text-center">Aksi</th>
+                                <th class="p-3 text-center no-print">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="tabel-rekap-jurnal-body">
@@ -210,15 +259,33 @@
 
         <!-- ================= TAB 3: DAFTAR NILAI ================= -->
         <div id="content-nilai" class="space-y-6 hidden">
-            <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-4">
+            <div id="print-area-nilai" class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4">
+                
+                <!-- KOP SURAT NILAI -->
+                <div class="border-b-2 border-slate-800 pb-4 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <img src="logo-alhuda-transparan.png" alt="Logo" class="w-14 h-14 object-contain" onerror="this.src='https://via.placeholder.com/60'">
+                        <div>
+                            <h2 class="text-base md:text-lg font-bold tracking-wide text-slate-900 uppercase">SMK AL-HUDA KEDIRI</h2>
+                            <p class="text-[11px] text-slate-600">Jl. Pesantren No. 1 Bence, Kec. Mojoroto, Kota Kediri, Jawa Timur</p>
+                            <p class="text-[10px] text-amber-700 font-semibold">DAFTAR PENGISIAN NILAI AKADEMIK SISWA</p>
+                        </div>
+                    </div>
+                    <div class="no-print">
+                        <button onclick="cetakArea('print-area-nilai')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-print"></i> Cetak Daftar Nilai
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pt-2">
                     <div>
                         <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                            <i class="fa-solid fa-star-half-stroke text-amber-600"></i> Pengisian Daftar Nilai Siswa
+                            <i class="fa-solid fa-star-half-stroke text-amber-600"></i> Pengisian & Rekap Daftar Nilai Siswa
                         </h3>
                         <p class="text-xs text-slate-500">Input nilai tugas/materi sesuai kelas dan mata pelajaran yang diampu.</p>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 w-full md:w-auto">
+                    <div class="no-print grid grid-cols-1 sm:grid-cols-3 gap-2 w-full md:w-auto">
                         <select id="pilih-kelas-nilai" onchange="muatSiswaUntukNilai()" class="border border-slate-300 rounded-lg p-2 text-xs bg-white font-medium">
                             <option value="">-- Pilih Kelas --</option>
                         </select>
@@ -246,7 +313,7 @@
                     </table>
                 </div>
 
-                <div class="flex justify-end pt-2">
+                <div class="flex justify-end pt-2 no-print">
                     <button onclick="simpanDaftarNilai()" class="bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2.5 px-6 rounded-lg text-xs transition shadow-sm flex items-center gap-2">
                         <i class="fa-solid fa-check-to-slot"></i> Simpan Daftar Nilai Siswa
                     </button>
@@ -295,7 +362,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="text-center py-6 text-xs text-slate-400 border-t border-slate-200 bg-white mt-8">
+    <footer class="text-center py-6 text-xs text-slate-400 border-t border-slate-200 bg-white mt-8 no-print">
         &copy; 2026 SMK Al-Huda Kediri. Sistem Akademik Terpadu.
     </footer>
 
@@ -342,6 +409,21 @@
 
             document.getElementById(`content-${tabName}`).classList.remove('hidden');
             document.getElementById(`tab-btn-${tabName}`).className = "py-3 px-4 border-b-2 font-semibold text-xs sm:text-sm flex items-center gap-2 transition border-indigo-600 text-indigo-600 whitespace-nowrap";
+        }
+
+        // Fungsi Universal Print / Cetak Bagian Tertentu
+        function cetakArea(areaId) {
+            const printContent = document.getElementById(areaId).innerHTML;
+            const originalContent = document.body.innerHTML;
+
+            document.body.innerHTML = `
+                <div style="font-family: Arial, sans-serif; padding: 20px;">
+                    ${printContent}
+                </div>
+            `;
+            window.print();
+            document.body.innerHTML = originalContent;
+            window.location.reload(); // Muat ulang halaman agar event listener kembali aktif normal
         }
 
         // Isi semua dropdown kelas berdasarkan kelas yang diampu guru
@@ -425,7 +507,6 @@
             }
 
             try {
-                // 1. Simpan/Update Rekap Jurnal ke tabel `jurnal_kbm`
                 const jurnalPayload = {
                     tanggal: tanggal,
                     kelas: kelas,
@@ -455,7 +536,6 @@
                     throw new Error("Gagal menyimpan rekap jurnal ke database.");
                 }
 
-                // 2. Update status presensi siswa ke tabel `presensi`
                 for (let s of daftarSiswaJurnal) {
                     await fetch(`${SUPABASE_URL}presensi?id=eq.${s.id}`, {
                         method: "PATCH",
@@ -495,7 +575,7 @@
                             <td class="p-3 font-medium text-slate-800">${j.materi_pokok}</td>
                             <td class="p-3 text-slate-600">${j.materi_inti}</td>
                             <td class="p-3 text-slate-500">${j.keterangan || '-'}</td>
-                            <td class="p-3 text-center space-x-1 whitespace-nowrap">
+                            <td class="p-3 text-center space-x-1 whitespace-nowrap no-print">
                                 <button onclick='editJurnal(${JSON.stringify(j)})' class="bg-amber-500 hover:bg-amber-600 text-white px-2.5 py-1 rounded text-[11px] font-semibold transition">
                                     <i class="fa-solid fa-pen-to-square"></i> Edit
                                 </button>
@@ -694,7 +774,6 @@
             desc.innerText = `Daftar lengkap siswa, rekapitulasi kehadiran, dan catatan khusus perwalian Anda.`;
 
             try {
-                // Ambil data siswa & catatan wali kelas secara paralel
                 const [resSiswa, resCatatan] = await Promise.all([
                     fetch(`${SUPABASE_URL}presensi?kelas=eq.${encodeURIComponent(kelasPerwalian)}&select=*`, {
                         headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
@@ -713,7 +792,6 @@
                     return;
                 }
 
-                // Buat mapping catatan berdasarkan NIS
                 const catatanMap = {};
                 dataCatatan.forEach(c => { catatanMap[c.nis] = c.catatan; });
 
@@ -743,7 +821,6 @@
             const inputVal = document.getElementById(`catatan-${nis}`).value.trim();
 
             try {
-                // Lakukan upsert ke tabel `catatan_walikelas` berdasarkan kombinasi unik nis & kelas
                 await fetch(`${SUPABASE_URL}catatan_walikelas`, {
                     method: "POST",
                     headers: { 
