@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Manajemen Guru & Absensi - SMK Al-Huda Kediri</title>
+    <title>Modul Manajemen Guru & Absensi - SMK Al-Huda Kediri</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- SheetJS untuk Membaca File Excel (.xlsx) -->
@@ -17,7 +17,7 @@
             <div class="flex items-center space-x-3">
                 <img src="logo-alhuda-transparan.png" alt="Logo SMK Al-Huda" class="w-10 h-10 object-contain bg-white rounded-full p-1 shadow" onerror="this.src='https://via.placeholder.com/40'">
                 <div>
-                    <h1 class="font-bold text-base md:text-lg leading-tight tracking-wide">PANEL GURU & ADMIN</h1>
+                    <h1 class="font-bold text-base md:text-lg leading-tight tracking-wide">MODUL GURU & ADMIN</h1>
                     <p class="text-[11px] text-emerald-400">SMK Al-Huda Kediri - Terintegrasi Supabase</p>
                 </div>
             </div>
@@ -29,15 +29,15 @@
         </div>
     </header>
 
-    <!-- Konten Utama Panel -->
+    <!-- Konten Utama Modul -->
     <main class="max-w-7xl mx-auto px-4 py-6 space-y-6 w-full flex-grow">
 
         <!-- Banner Info Sesi -->
         <div class="bg-gradient-to-r from-emerald-800 to-teal-900 text-white rounded-2xl p-6 shadow-md flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="space-y-1">
                 <span class="bg-emerald-700 text-emerald-100 text-[10px] font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Sistem Akademik Terpadu</span>
-                <h2 class="text-xl md:text-2xl font-bold pt-1">Portal Manajemen Pengajar & Absensi Siswa</h2>
-                <p class="text-emerald-100 text-xs md:text-sm">Kelola pendaftaran akun guru (terverifikasi admin), unggah database siswa via Excel, dan akses login pengajar.</p>
+                <h2 class="text-xl md:text-2xl font-bold pt-1">Modul Pengelola Pengajar & Absensi Siswa</h2>
+                <p class="text-emerald-100 text-xs md:text-sm">Kelola pendaftaran akun guru dengan mapping kelas spesifik, unggah database siswa via Excel, dan akses jurnal.</p>
             </div>
             <div class="bg-emerald-950/60 p-4 rounded-xl border border-emerald-700/60 text-xs space-y-1.5 min-w-[220px] shadow-inner">
                 <div class="text-emerald-300 font-semibold border-b border-emerald-800 pb-1">Status Sistem:</div>
@@ -53,8 +53,8 @@
                     <i class="fa-solid fa-right-to-bracket"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-slate-800 text-sm sm:text-base">Login Halaman Guru</h3>
-                    <p class="text-[11px] text-slate-500">Masuk menggunakan NIP/ID dan password terdaftar untuk membuka Jurnal Guru.</p>
+                    <h3 class="font-bold text-slate-800 text-sm sm:text-base">Login Halaman Jurnal Guru</h3>
+                    <p class="text-[11px] text-slate-500">Masuk menggunakan NIP/ID dan password terdaftar untuk membuka Jurnal Mengajar.</p>
                 </div>
             </div>
 
@@ -78,7 +78,7 @@
         <!-- Grid Menu Utama (Pendaftaran & Upload Absensi) -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            <!-- Modul A: Pendaftaran Akun Guru Baru (Dengan Verifikasi Admin) -->
+            <!-- Modul A: Pendaftaran Akun Guru Baru (Dengan Pilihan Kelas & Rombel Dinamis) -->
             <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4 flex flex-col justify-between">
                 <div>
                     <div class="flex items-center gap-3 border-b border-slate-100 pb-3 mb-4">
@@ -87,7 +87,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-slate-800 text-sm sm:text-base">Registrasi Akun Guru Baru</h3>
-                            <p class="text-[11px] text-slate-500">Pendaftaran pengajar baru membutuhkan kode verifikasi admin.</p>
+                            <p class="text-[11px] text-slate-500">Atur akun, mata pelajaran, serta tambah/kurang daftar kelas yang diampu.</p>
                         </div>
                     </div>
 
@@ -106,17 +106,47 @@
                                 <input type="password" id="reg-password-guru" placeholder="Kata sandi rahasia" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Pengampu Mata Pelajaran</label>
-                                <input type="text" id="reg-tugas-guru" placeholder="Contoh: Matematika" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Pengampu Mata Pelajaran</label>
+                            <input type="text" id="reg-tugas-guru" placeholder="Contoh: Produktif TKJ / Matematika" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                        </div>
+
+                        <!-- Bagian Pengaturan Kelas & Rombel yang Diampu (Bisa Tambah/Kurang) -->
+                        <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-2.5">
+                            <label class="block text-xs font-bold text-slate-700 flex items-center justify-between">
+                                <span><i class="fa-solid fa-chalkboard text-amber-600 mr-1"></i> Daftar Kelas & Rombel yang Diampu</span>
+                                <span class="text-[10px] text-slate-400 font-normal">Pilih & tambahkan daftar kelas</span>
+                            </label>
+                            
+                            <div class="grid grid-cols-3 gap-2">
+                                <div>
+                                    <select id="input-pilih-tingkat" class="w-full border border-slate-300 rounded-lg p-1.5 text-xs bg-white">
+                                        <option value="X">Kelas X</option>
+                                        <option value="XI">Kelas XI</option>
+                                        <option value="XII">Kelas XII</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <select id="input-pilih-jurusan" class="w-full border border-slate-300 rounded-lg p-1.5 text-xs bg-white">
+                                        <option value="TKJ">TKJ</option>
+                                        <option value="TITL">TITL</option>
+                                        <option value="TKR">TKR</option>
+                                        <option value="TSM">TSM</option>
+                                        <option value="PF">PF</option>
+                                    </select>
+                                </div>
+                                <div class="flex gap-1">
+                                    <select id="input-pilih-rombel" class="w-full border border-slate-300 rounded-lg p-1.5 text-xs bg-white">
+                                        <option value="1">Rombel 1</option>
+                                        <option value="2">Rombel 2</option>
+                                    </select>
+                                    <button type="button" onclick="tambahDaftarKelasGuru()" class="bg-amber-600 hover:bg-amber-700 text-white px-2.5 rounded-lg text-xs font-bold transition shadow-sm" title="Tambah Kelas"><i class="fa-solid fa-plus"></i></button>
+                                </div>
                             </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Wali Kelas (Opsional)</label>
-                                <select id="reg-wali-kelas" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
-                                    <option value="">-- Bukan Wali Kelas --</option>
-                                    <!-- Opsi kelas terisi otomatis dari daftar tingkat, jurusan, & rombel -->
-                                </select>
+
+                            <!-- Daftar Badge Kelas yang Ditambahkan -->
+                            <div id="container-badge-kelas" class="flex flex-wrap gap-1.5 pt-1 min-h-[32px] items-center">
+                                <span class="text-[11px] text-slate-400 italic">Belum ada kelas yang ditambahkan. Klik tombol (+) untuk memasukkan kelas.</span>
                             </div>
                         </div>
 
@@ -125,15 +155,15 @@
                             <label class="block text-xs font-bold text-amber-900 flex items-center gap-1.5">
                                 <i class="fa-solid fa-shield-halved text-amber-600"></i> Kode Verifikasi Admin (Password Admin)
                             </label>
-                            <input type="password" id="reg-admin-password" placeholder="Masukkan password admin (adminsmk123)" class="w-full border border-amber-300 rounded-lg p-2 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
-                            <p class="text-[10px] text-amber-700">Wajib diisi oleh admin sekolah untuk mengonfirmasi pembuatan akun guru baru.</p>
+                            <input type="password" id="reg-admin-password" placeholder="Password admin (adminsmk123)" class="w-full border border-amber-300 rounded-lg p-2 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            <p class="text-[10px] text-amber-700">Wajib diisi oleh admin sekolah untuk mengonfirmasi pembuatan akun.</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="pt-4">
                     <button onclick="buatAkunGuruBaru()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2.5 px-4 rounded-lg text-xs sm:text-sm transition shadow-sm flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-user-check"></i> Daftarkan Akun Guru
+                        <i class="fa-solid fa-user-check"></i> Simpan & Daftarkan Akun Guru
                     </button>
                 </div>
             </div>
@@ -147,7 +177,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-slate-800 text-sm sm:text-base">Upload Master Data Siswa (Excel)</h3>
-                            <p class="text-[11px] text-slate-500">Pilih tingkat, jurusan, & rombel sebelum unggah daftar siswa.</p>
+                            <p class="text-[11px] text-slate-500">Pilih tingkat, jurusan, & rombel tujuan sebelum upload database.</p>
                         </div>
                     </div>
                     
@@ -201,9 +231,9 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                 <div>
                     <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
-                        <i class="fa-solid fa-chalkboard-user text-emerald-600"></i> Daftar Pengajar & Wali Kelas Terdaftar
+                        <i class="fa-solid fa-chalkboard-user text-emerald-600"></i> Daftar Pengajar & Kelas Diampu
                     </h3>
-                    <p class="text-xs text-slate-500">Daftar akun pengajar yang aktif di dalam database Supabase.</p>
+                    <p class="text-xs text-slate-500">Daftar akun pengajar yang aktif di dalam database Supabase beserta pemetaan kelasnya.</p>
                 </div>
                 <button onclick="muatDataGuru()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-2 rounded-lg transition flex items-center gap-1.5 border border-slate-300">
                     <i class="fa-solid fa-rotate"></i> <span>Muat Ulang Data</span>
@@ -217,8 +247,8 @@
                             <th class="p-3">No</th>
                             <th class="p-3">Nama & Gelar</th>
                             <th class="p-3">NIP / ID (Login)</th>
-                            <th class="p-3">Pengampu Mapel</th>
-                            <th class="p-3">Wali Kelas</th>
+                            <th class="p-3">Mata Pelajaran</th>
+                            <th class="p-3">Kelas / Rombel yang Diampu</th>
                             <th class="p-3">Status</th>
                         </tr>
                     </thead>
@@ -235,53 +265,69 @@
 
     <!-- Footer -->
     <footer class="text-center py-6 text-xs text-slate-400 border-t border-slate-200 bg-white mt-8">
-        &copy; 2026 SMK Al-Huda Kediri. Panel Khusus Guru & Manajemen Sistem Terpadu.
+        &copy; 2026 SMK Al-Huda Kediri. Modul Khusus Guru & Manajemen Sistem Terpadu.
     </footer>
 
-    <!-- Skrip Integrasi Supabase & Excel -->
+    <!-- Skrip JavaScript -->
     <script>
         const SUPABASE_URL = "https://qrfwzyhwypxrodjxcnmf.supabase.co/rest/v1/";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFyZnd6eWh3eXB4cm9kanhjbm1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyMDc0NDgsImV4cCI6MjEwMzc4MzQ0OH0.gOzKeWaAZZVrWJ1bBq4forsRrQkL2Gw8JmIo1F_Gi3Y";
 
-        // Daftar Kelas Permanen Sesuai Permintaan
-        const LIST_TINGKAT = ["X", "XI", "XII"];
-        const LIST_JURUSAN = ["TKJ", "TITL", "TKR", "TSM", "PF"];
-        const LIST_ROMBEL = ["1", "2"];
+        // Array penampung kelas yang dipilih untuk guru baru
+        let daftarKelasPilihanGuru = [];
 
         window.addEventListener('DOMContentLoaded', () => {
             muatDataGuru();
-            generateDaftarKelasLengkap();
         });
 
-        // Generate Pilihan Kelas Kombinasi (Contoh: X-TKJ-1, XI-TKR-2, dst) untuk Wali Kelas & Sinkronisasi
-        function generateDaftarKelasLengkap() {
-            const selectWali = document.getElementById('reg-wali-kelas');
-            selectWali.innerHTML = `<option value="">-- Bukan Wali Kelas --</option>`;
+        // Tambah kelas ke daftar pilihan guru secara interaktif
+        function tambahDaftarKelasGuru() {
+            const tingkat = document.getElementById('input-pilih-tingkat').value;
+            const jurusan = document.getElementById('input-pilih-jurusan').value;
+            const rombel = document.getElementById('input-pilih-rombel').value;
             
-            let daftarKelasGabungan = [];
+            const kelasFormat = `${tingkat}-${jurusan}-${rombel}`;
 
-            LIST_TINGKAT.forEach(tingkat => {
-                LIST_JURUSAN.forEach(jurusan => {
-                    LIST_ROMBEL.forEach(rombel => {
-                        // Format kelas yang dihasilkan: X-TKJ-1, X-TKJ-2, dst.
-                        const namaKelas = `${tingkat}-${jurusan}-${rombel}`;
-                        daftarKelasGabungan.push(namaKelas);
-                        selectWali.innerHTML += `<option value="${namaKelas}">${namaKelas}</option>`;
-                    });
-                });
-            });
+            if (daftarKelasPilihanGuru.includes(kelasFormat)) {
+                alert(`Kelas ${kelasFormat} sudah ada dalam daftar.`);
+                return;
+            }
 
-            // Simpan ke localStorage agar dapat dibaca di halaman user guru / index utama
-            localStorage.setItem('daftar_kelas_tersedia', JSON.stringify(daftarKelasGabungan));
+            daftarKelasPilihanGuru.push(kelasFormat);
+            renderBadgeKelasGuru();
         }
 
-        // Pendaftaran Akun Guru Baru
+        // Hapus kelas dari daftar pilihan guru
+        function hapusKelasGuru(index) {
+            daftarKelasPilihanGuru.splice(index, 1);
+            renderBadgeKelasGuru();
+        }
+
+        // Tampilkan badge kelas di form pendaftaran
+        function renderBadgeKelasGuru() {
+            const container = document.getElementById('container-badge-kelas');
+            if (daftarKelasPilihanGuru.length === 0) {
+                container.innerHTML = `<span class="text-[11px] text-slate-400 italic">Belum ada kelas yang ditambahkan. Klik tombol (+) untuk memasukkan kelas.</span>`;
+                return;
+            }
+
+            container.innerHTML = "";
+            daftarKelasPilihanGuru.forEach((kls, idx) => {
+                container.innerHTML += `
+                    <span class="bg-amber-100 text-amber-800 border border-amber-200 text-xs px-2.5 py-1 rounded-md font-medium flex items-center gap-1.5 shadow-sm">
+                        ${kls} 
+                        <button type="button" onclick="hapusKelasGuru(${idx})" class="text-amber-600 hover:text-rose-600 font-bold ml-1"><i class="fa-solid fa-xmark"></i></button>
+                    </span>
+                `;
+            });
+        }
+
+        // Pendaftaran Akun Guru Baru ke Supabase
         async function buatAkunGuruBaru() {
             const nama = document.getElementById('reg-nama-guru').value.trim();
             const nip = document.getElementById('reg-nip-guru').value.trim();
             const password = document.getElementById('reg-password-guru').value.trim();
             const tugas = document.getElementById('reg-tugas-guru').value.trim();
-            const wali_kelas = document.getElementById('reg-wali-kelas').value;
             const adminPasswordInput = document.getElementById('reg-admin-password').value.trim();
 
             if (!nama || !nip || !password) {
@@ -290,9 +336,12 @@
             }
 
             if (adminPasswordInput !== "adminsmk123") {
-                alert("Kode Verifikasi Admin salah! Masukkan password admin yang benar (adminsmk123) untuk mengonfirmasi pembuatan akun.");
+                alert("Kode Verifikasi Admin salah! Masukkan password admin yang benar (adminsmk123).");
                 return;
             }
+
+            // Ubah array kelas menjadi string (dipisahkan koma) agar mudah disimpan di database
+            const kelasDiampuString = daftarKelasPilihanGuru.join(", ");
 
             try {
                 const response = await fetch(SUPABASE_URL + "guru", {
@@ -303,17 +352,25 @@
                         "Content-Type": "application/json",
                         "Prefer": "return=minimal"
                     },
-                    body: JSON.stringify({ nama, nip, password, tugas, wali_kelas })
+                    body: JSON.stringify({ 
+                        nama, 
+                        nip, 
+                        password, 
+                        tugas, 
+                        wali_kelas: kelasDiampuString // disimpan ke kolom database
+                    })
                 });
 
                 if (response.ok) {
-                    alert(`Berhasil! Akun guru "${nama}" telah dikonfirmasi admin dan berhasil didaftarkan.`);
+                    alert(`Berhasil! Akun guru "${nama}" berhasil didaftarkan dengan akses kelas: ${kelasDiampuString || '-'}`);
+                    // Reset Form
                     document.getElementById('reg-nama-guru').value = '';
                     document.getElementById('reg-nip-guru').value = '';
                     document.getElementById('reg-password-guru').value = '';
                     document.getElementById('reg-tugas-guru').value = '';
-                    document.getElementById('reg-wali-kelas').value = '';
                     document.getElementById('reg-admin-password').value = '';
+                    daftarKelasPilihanGuru = [];
+                    renderBadgeKelasGuru();
                     muatDataGuru();
                 } else {
                     const err = await response.json();
@@ -325,7 +382,7 @@
             }
         }
 
-        // Fungsi Login Guru Menuju Halaman Jurnal Guru
+        // Fungsi Login Guru Menuju Halaman Jurnal Guru (jurnal-guru.html)
         async function loginGuru() {
             const nipInput = document.getElementById('login-nip').value.trim();
             const passInput = document.getElementById('login-password').value.trim();
@@ -353,6 +410,7 @@
 
                     const guru = data[0];
                     if (guru.password === passInput) {
+                        // Simpan sesi guru lengkap dengan kelas yang diampu untuk dibaca di jurnal-guru.html
                         localStorage.setItem('session_guru', JSON.stringify(guru));
                         alert(`Login Berhasil! Selamat datang, ${guru.nama}.`);
                         window.location.href = "jurnal-guru.html";
@@ -397,7 +455,7 @@
                                 <td class="p-3 font-semibold text-slate-800">${guru.nama}</td>
                                 <td class="p-3 text-slate-600">${guru.nip}</td>
                                 <td class="p-3 text-slate-600">${guru.tugas || '-'}</td>
-                                <td class="p-3"><span class="bg-amber-50 text-amber-700 px-2 py-0.5 rounded font-medium">${guru.wali_kelas || 'Bukan Wali Kelas'}</span></td>
+                                <td class="p-3"><span class="bg-amber-50 text-amber-700 px-2 py-1 rounded font-medium">${guru.wali_kelas || 'Tidak ada kelas'}</span></td>
                                 <td class="p-3 text-emerald-600 font-semibold text-[11px]">Aktif</td>
                             </tr>
                         `;
@@ -411,7 +469,7 @@
             }
         }
 
-        // Upload Master Data Siswa via Excel dengan Pilihan Tingkat, Jurusan, & Rombel
+        // Upload Master Data Siswa via Excel
         function prosesUploadDataSiswa() {
             const tingkat = document.getElementById('target-tingkat').value;
             const jurusan = document.getElementById('target-jurusan').value;
@@ -423,7 +481,6 @@
                 return;
             }
 
-            // Format Kelas Gabungan, Contoh: X-TKJ-1
             const kelasGabung = `${tingkat}-${jurusan}-${rombel}`;
             const file = fileInput.files[0];
             const reader = new FileReader();
