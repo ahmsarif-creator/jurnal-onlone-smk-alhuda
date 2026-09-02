@@ -13,7 +13,7 @@
     <header class="bg-emerald-800 text-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-3.5 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <img src="logo-alhuda-transparan.png" alt="Logo SMK Al-Huda" class="w-10 h-10 object-contain bg-white rounded-full p-1 shadow">
+                <img src="logo-alhuda-transparan.png" alt="Logo SMK Al-Huda" class="w-10 h-10 object-contain bg-white rounded-full p-1 shadow" onerror="this.src='https://via.placeholder.com/40'">
                 <div>
                     <h1 class="font-bold text-base md:text-lg leading-tight tracking-wide">SMK AL-HUDA KEDIRI</h1>
                     <p class="text-[11px] text-emerald-200">Portal Publik & Akademik Siswa</p>
@@ -33,7 +33,7 @@
         <!-- Banner / Hero Section -->
         <div class="relative rounded-2xl overflow-hidden shadow-xl bg-slate-900 text-white">
             <div class="absolute inset-0">
-                <img src="gedung-alhuda.png" alt="Gedung SMK Al-Huda" class="w-full h-full object-cover opacity-35">
+                <img src="gedung-alhuda.png" alt="Gedung SMK Al-Huda" class="w-full h-full object-cover opacity-35" onerror="this.style.display='none'">
             </div>
             <div class="relative p-6 sm:p-10 md:p-12 space-y-3">
                 <span class="bg-emerald-600/90 text-white text-[10px] sm:text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Informasi Akademik Terbuka</span>
@@ -127,44 +127,53 @@
 
         </div>
 
-        <!-- Fitur Pencarian / Pantau Mandiri Siswa & Wali Murid (Sinkron Data dari Mode Guru) -->
+        <!-- Fitur Pencarian / Pantau Mandiri Siswa & Wali Murid (Sinkron Supabase) -->
         <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4">
             <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
                 <i class="fa-solid fa-magnifying-glass text-emerald-600"></i> Pantau Rekap Nilai & Absensi Siswa
             </h3>
-            <p class="text-xs text-slate-500">Pilih tingkat kelas (X, XI, XII), pilih jurusan, lalu masukkan Nama atau NIS siswa untuk melihat data.</p>
+            <p class="text-xs text-slate-500">Pilih tingkat, jurusan, dan rombel, atau ketik nama/penggalan nama/NIS untuk mencari data siswa dari database.</p>
             
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <!-- Pilihan Tingkat Kelas (X, XI, XII) -->
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                <!-- Pilihan Tingkat Kelas -->
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Tingkat Kelas</label>
                     <select id="filter-tingkat" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                        <option value="">Semua Tingkat (X, XI, XII)</option>
+                        <option value="">Semua Tingkat</option>
                         <option value="X">Kelas X</option>
                         <option value="XI">Kelas XI</option>
                         <option value="XII">Kelas XII</option>
                     </select>
                 </div>
 
-                <!-- Pilihan Jurusan (Diambil/disesuaikan dari Database/Mode Guru) -->
+                <!-- Pilihan Jurusan (Sinkron dengan modul-guru.html) -->
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Jurusan</label>
                     <select id="filter-jurusan" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                        <option value="">Semua Jurusan (Sinkron Mode Guru)</option>
-                        <!-- Opsi jurusan ini nantinya otomatis mengikuti data master yang diatur di Mode Guru -->
-                        <option value="PPLG">Pengembangan Perangkat Lunak & Gim (PPLG)</option>
-                        <option value="TJKT">Teknik Jaringan Komputer & Telekomunikasi</option>
-                        <option value="TKRO">Teknik Kendaraan Ringan Otomotif</option>
-                        <option value="TBSM">Teknik Bisnis Sepeda Motor</option>
+                        <option value="">Semua Jurusan</option>
+                        <option value="TKJ">TKJ (Teknik Komputer & Jaringan)</option>
+                        <option value="TITL">TITL (Teknik Instalasi Tenaga Listrik)</option>
+                        <option value="TKR">TKR (Teknik Kendaraan Ringan)</option>
+                        <option value="TSM">TSM (Teknik Sepeda Motor)</option>
+                        <option value="TPM">TPM (Teknik Pemesinan)</option>
+                        <option value="PF">PF (Produksi Film)</option>
+                    </select>
+                </div>
+
+                <!-- Pilihan Rombel -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Rombel</label>
+                    <select id="filter-rombel" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <option value="">Semua Rombel</option>
+                        <option value="1">Rombel 1</option>
+                        <option value="2">Rombel 2</option>
                     </select>
                 </div>
 
                 <!-- Input Nama / NIS -->
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Cari Nama / NIS</label>
-                    <div class="flex gap-2">
-                        <input type="text" id="cari-nis" placeholder="Nama atau NIS..." class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                    </div>
+                    <input type="text" id="cari-keyword" placeholder="Contoh: Budi atau 1023..." class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                 </div>
             </div>
 
@@ -174,8 +183,12 @@
                 </button>
             </div>
 
-            <div id="hasil-pencarian" class="hidden p-4 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
-                <!-- Hasil pencarian akan ditarik dari Supabase / Mode Guru -->
+            <!-- Kontainer Hasil Pencarian -->
+            <div id="hasil-pencarian" class="hidden p-4 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-3">
+                <p class="font-bold text-emerald-800 text-sm mb-2"><i class="fa-solid fa-circle-check"></i> Hasil Pencarian Data Siswa:</p>
+                <div id="tabel-hasil-body" class="overflow-x-auto">
+                    <!-- Data hasil query supabase akan dimasukkan lewat Javascript -->
+                </div>
             </div>
         </div>
 
@@ -186,7 +199,7 @@
         &copy; 2026 SMK Al-Huda Kediri. All rights reserved. Layanan Informasi Akademik Terpadu.
     </footer>
 
-    <!-- Skrip Interaktif & Validasi Password Mode Guru -->
+    <!-- Skrip Interaktif & Validasi Supabase -->
     <script>
         const SUPABASE_URL = "https://qrfwzyhwypxrodjxcnmf.supabase.co/rest/v1/";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFyZnd6eWh3eXB4cm9kanhjbm1mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyMDc0NDgsImV4cCI6MjEwMzc4MzQ0OH0.gOzKeWaAZZVrWJ1bBq4forsRrQkL2Gw8JmIo1F_Gi3Y";
@@ -198,34 +211,99 @@
             
             if (password === "smkbisa123") {
                 alert("Kata sandi benar! Mengarahkan ke Dashboard Khusus Mode Guru...");
-                window.location.href = "modul-guru.html"; // File terpisah untuk manajemen guru, input Excel, dll.
+                window.location.href = "modul-guru.html"; 
             } else {
                 alert("Kata sandi salah! Akses ditolak. Halaman ini khusus untuk publik, siswa, dan wali murid.");
             }
         }
 
-        // Fungsi Pencarian Data Siswa (Siap dihubungkan ke API Supabase berdasarkan filter kelas/jurusan)
-        function cariDataSiswa() {
+        // Fungsi Pencarian Data Siswa Terhubung ke Supabase dengan Filter Lengkap & Case-Insensitive (ilike)
+        async function cariDataSiswa() {
             const tingkat = document.getElementById('filter-tingkat').value;
             const jurusan = document.getElementById('filter-jurusan').value;
-            const keyword = document.getElementById('cari-nis').value.trim();
+            const rombel = document.getElementById('filter-rombel').value;
+            const keyword = document.getElementById('cari-keyword').value.trim();
             const resultBox = document.getElementById('hasil-pencarian');
-
-            if (!keyword && !tingkat && !jurusan) {
-                alert("Mohon tentukan minimal filter pencarian (Nama/NIS, Tingkat, atau Jurusan).");
-                return;
-            }
+            const tabelBody = document.getElementById('tabel-hasil-body');
 
             resultBox.classList.remove('hidden');
-            resultBox.innerHTML = `
-                <p class="font-bold text-emerald-800 text-sm mb-2"><i class="fa-solid fa-circle-check"></i> Hasil Pencarian / Filter Terhubung:</p>
-                <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-200">
-                    <div><span class="text-slate-500 block">Filter Kelas:</span> <strong class="text-slate-800">${tingkat ? 'Tingkat ' + tingkat : 'Semua'} ${jurusan ? '(' + jurusan + ')' : ''}</strong></div>
-                    <div><span class="text-slate-500 block">Keyword:</span> <strong class="text-slate-800">${keyword || 'Semua Data'}</strong></div>
-                    <div><span class="text-slate-500 block">Kehadiran:</span> <strong class="text-emerald-700">95% (Hadir)</strong></div>
-                    <div><span class="text-slate-500 block">Nilai Rata-rata:</span> <strong class="text-blue-700">83.0 (Tuntas)</strong></div>
-                </div>
-            `;
+            tabelBody.innerHTML = `<p class="text-slate-500 italic">Mencari data siswa di database...</p>`;
+
+            try {
+                let queryUrl = SUPABASE_URL + "presensi?select=*";
+
+                // Filter Kelas Gabungan jika Tingkat/Jurusan/Rombel dipilih
+                if (tingkat && jurusan && rombel) {
+                    const kelasFull = `${tingkat}-${jurusan}-${rombel}`;
+                    queryUrl += `&kelas=eq.${encodeURIComponent(kelasFull)}`;
+                } else if (tingkat || jurusan || rombel) {
+                    // Filter parsial menggunakan operator like (*)
+                    let patternParts = [
+                        tingkat ? tingkat : "*",
+                        jurusan ? jurusan : "*",
+                        rombel ? rombel : "*"
+                    ];
+                    let pattern = patternParts.join("-");
+                    queryUrl += `&kelas=like.${encodeURIComponent(pattern)}`;
+                }
+
+                // Filter Keyword Nama atau NIS (Menggunakan ilike agar tidak sensitif huruf besar/kecil & mendukung penggalan kata)
+                if (keyword) {
+                    queryUrl += `&or=(nama.ilike.*${encodeURIComponent(keyword)}*,nomor_induk.ilike.*${encodeURIComponent(keyword)}*)`;
+                }
+
+                const response = await fetch(queryUrl, {
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization": "Bearer " + SUPABASE_KEY
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    if (data.length === 0) {
+                        tabelBody.innerHTML = `<p class="text-rose-600 font-medium">Tidak ada data siswa yang cocok dengan kriteria pencarian.</p>`;
+                        return;
+                    }
+
+                    let html = `
+                        <table class="w-full text-left border-collapse text-xs bg-white border border-slate-200 rounded-lg">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 border-b border-slate-200 font-bold">
+                                    <th class="p-2.5">No</th>
+                                    <th class="p-2.5">Nama Siswa</th>
+                                    <th class="p-2.5">NIS / No Induk</th>
+                                    <th class="p-2.5">Kelas</th>
+                                    <th class="p-2.5">Status Kehadiran</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
+                    data.forEach((siswa, idx) => {
+                        html += `
+                            <tr class="border-b border-slate-100 hover:bg-slate-50">
+                                <td class="p-2.5">${idx + 1}</td>
+                                <td class="p-2.5 font-semibold text-slate-800">${siswa.nama}</td>
+                                <td class="p-2.5 text-slate-600">${siswa.nomor_induk}</td>
+                                <td class="p-2.5"><span class="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-medium">${siswa.kelas || '-'}</span></td>
+                                <td class="p-2.5 font-bold text-emerald-600">${siswa.status || 'Hadir'}</td>
+                            </tr>
+                        `;
+                    });
+
+                    html += `</tbody></table>`;
+                    tabelBody.innerHTML = html;
+
+                } else {
+                    tabelBody.innerHTML = `<p class="text-rose-600">Gagal mengambil data dari database Supabase.</p>`;
+                }
+
+            } catch (error) {
+                console.error(error);
+                tabelBody.innerHTML = `<p class="text-rose-600">Terjadi kesalahan koneksi jaringan.</p>`;
+            }
         }
     </script>
 </body>
