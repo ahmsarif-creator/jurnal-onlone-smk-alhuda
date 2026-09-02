@@ -68,10 +68,12 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Panel Detail Jurnal -->
                 <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4 lg:col-span-1">
-                    <h3 class="font-bold text-slate-800 text-sm sm:text-base border-b border-slate-100 pb-3 flex items-center gap-2">
+                    <h3 id="jurnal-form-title" class="font-bold text-slate-800 text-sm sm:text-base border-b border-slate-100 pb-3 flex items-center gap-2">
                         <i class="fa-solid fa-pen-nib text-indigo-600"></i> Detail Kurikulum KBM
                     </h3>
                     
+                    <input type="hidden" id="edit-jurnal-id" value="">
+
                     <div class="space-y-3">
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Kelas yang Diampu</label>
@@ -97,9 +99,14 @@
                         </div>
                     </div>
 
-                    <button onclick="simpanJurnalHarian()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-lg text-xs sm:text-sm transition shadow-sm flex items-center justify-center gap-2 mt-4">
-                        <i class="fa-solid fa-floppy-disk"></i> Simpan Jurnal & Presensi
-                    </button>
+                    <div class="flex gap-2 mt-4">
+                        <button onclick="simpanJurnalHarian()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-4 rounded-lg text-xs sm:text-sm transition shadow-sm flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> Simpan Jurnal & Presensi
+                        </button>
+                        <button id="btn-batal-edit" onclick="resetFormJurnal()" class="hidden bg-slate-300 hover:bg-slate-400 text-slate-700 font-semibold py-2.5 px-3 rounded-lg text-xs transition">
+                            Batal
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Panel Absensi Siswa dalam Jurnal -->
@@ -128,6 +135,37 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+
+            <!-- Panel Rekapitulasi Jurnal Tersimpan di Bawah -->
+            <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-rectangle-list text-indigo-600"></i> Rekapitulasi Jurnal KBM Anda
+                    </h3>
+                    <button onclick="muatRekapJurnal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-rotate"></i> Muat Ulang Rekap
+                    </button>
+                </div>
+                <div class="overflow-x-auto border border-slate-200 rounded-lg">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                            <tr>
+                                <th class="p-3">Tanggal</th>
+                                <th class="p-3">Kelas</th>
+                                <th class="p-3">Materi Pokok</th>
+                                <th class="p-3">Materi Inti / Pembahasan</th>
+                                <th class="p-3">Keterangan</th>
+                                <th class="p-3 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabel-rekap-jurnal-body">
+                            <tr>
+                                <td colspan="6" class="p-6 text-center text-slate-400 italic">Memuat rekap jurnal...</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -227,7 +265,7 @@
             <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                     <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                        <i class="fa-solid fa-graduation-cap text-emerald-600"></i> Daftar Siswa Perwalian Kelas Anda
+                        <i class="fa-solid fa-graduation-cap text-emerald-600"></i> Daftar Siswa Perwalian Kelas Anda & Catatan Khusus
                     </h3>
                     <span id="badge-total-perwalian" class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-semibold">Total: 0 Siswa</span>
                 </div>
@@ -240,12 +278,13 @@
                                 <th class="p-3">NIS</th>
                                 <th class="p-3">Nama Siswa</th>
                                 <th class="p-3">Kelas / Rombel</th>
-                                <th class="p-3 text-center">Status Kehadiran Terakhir</th>
+                                <th class="p-3 text-center">Status Kehadiran</th>
+                                <th class="p-3">Catatan Wali Kelas (Bisa Diketik)</th>
                             </tr>
                         </thead>
                         <tbody id="tabel-perwalian-body">
                             <tr>
-                                <td colspan="5" class="p-6 text-center text-slate-400 italic">Memuat data perwalian...</td>
+                                <td colspan="6" class="p-6 text-center text-slate-400 italic">Memuat data perwalian...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -288,8 +327,9 @@
             const todayStr = new Date().toISOString().split('T')[0];
             document.getElementById('input-tanggal-jurnal').value = todayStr;
 
-            // Inisialisasi Dropdown Kelas
+            // Inisialisasi Dropdown Kelas & Data Rekap
             isiDropdownKelasSemua();
+            muatRekapJurnal();
             muatDataWaliKelas();
         });
 
@@ -371,8 +411,10 @@
         }
 
         async function simpanJurnalHarian() {
+            const editId = document.getElementById('edit-jurnal-id').value;
             const kelas = document.getElementById('pilih-kelas-jurnal').value;
             const tanggal = document.getElementById('input-tanggal-jurnal').value;
+            const mapel = document.getElementById('jurnal-mapel').value;
             const materiPokok = document.getElementById('jurnal-materi-pokok').value.trim();
             const materiInti = document.getElementById('jurnal-materi-inti').value.trim();
             const keterangan = document.getElementById('jurnal-keterangan-teks').value.trim();
@@ -383,7 +425,37 @@
             }
 
             try {
-                // Update status presensi siswa ke database
+                // 1. Simpan/Update Rekap Jurnal ke tabel `jurnal_kbm`
+                const jurnalPayload = {
+                    tanggal: tanggal,
+                    kelas: kelas,
+                    mapel: mapel,
+                    materi_pokok: materiPokok,
+                    materi_inti: materiInti,
+                    keterangan: keterangan,
+                    guru_pengampu: currentGuru.nama
+                };
+
+                let resJurnal;
+                if (editId) {
+                    resJurnal = await fetch(`${SUPABASE_URL}jurnal_kbm?id=eq.${editId}`, {
+                        method: "PATCH",
+                        headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY, "Content-Type": "application/json", "Prefer": "return=minimal" },
+                        body: JSON.stringify(jurnalPayload)
+                    });
+                } else {
+                    resJurnal = await fetch(`${SUPABASE_URL}jurnal_kbm`, {
+                        method: "POST",
+                        headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY, "Content-Type": "application/json", "Prefer": "return=minimal" },
+                        body: JSON.stringify(jurnalPayload)
+                    });
+                }
+
+                if (!resJurnal.ok) {
+                    throw new Error("Gagal menyimpan rekap jurnal ke database.");
+                }
+
+                // 2. Update status presensi siswa ke tabel `presensi`
                 for (let s of daftarSiswaJurnal) {
                     await fetch(`${SUPABASE_URL}presensi?id=eq.${s.id}`, {
                         method: "PATCH",
@@ -392,13 +464,99 @@
                     });
                 }
 
-                alert(`Berhasil! Jurnal KBM Tanggal ${tanggal} untuk kelas ${kelas} telah disimpan.`);
-                document.getElementById('jurnal-materi-pokok').value = '';
-                document.getElementById('jurnal-materi-inti').value = '';
-                document.getElementById('jurnal-keterangan-teks').value = '';
+                alert(editId ? "Jurnal berhasil diperbarui!" : "Jurnal & Presensi berhasil disimpan!");
+                resetFormJurnal();
+                muatRekapJurnal();
             } catch (err) {
                 console.error(err);
                 alert("Terjadi kesalahan saat menyimpan jurnal.");
+            }
+        }
+
+        async function muatRekapJurnal() {
+            const tbody = document.getElementById('tabel-rekap-jurnal-body');
+            try {
+                const res = await fetch(`${SUPABASE_URL}jurnal_kbm?guru_pengampu=eq.${encodeURIComponent(currentGuru.nama)}&order=tanggal.desc&select=*`, {
+                    headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
+                });
+                const data = await res.json();
+
+                if (data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400 italic">Belum ada rekap jurnal yang tersimpan.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = "";
+                data.forEach((j) => {
+                    tbody.innerHTML += `
+                        <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
+                            <td class="p-3 font-semibold text-indigo-600">${j.tanggal}</td>
+                            <td class="p-3 font-semibold">${j.kelas}</td>
+                            <td class="p-3 font-medium text-slate-800">${j.materi_pokok}</td>
+                            <td class="p-3 text-slate-600">${j.materi_inti}</td>
+                            <td class="p-3 text-slate-500">${j.keterangan || '-'}</td>
+                            <td class="p-3 text-center space-x-1 whitespace-nowrap">
+                                <button onclick='editJurnal(${JSON.stringify(j)})' class="bg-amber-500 hover:bg-amber-600 text-white px-2.5 py-1 rounded text-[11px] font-semibold transition">
+                                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                                </button>
+                                <button onclick="hapusJurnal(${j.id})" class="bg-rose-500 hover:bg-rose-600 text-white px-2.5 py-1 rounded text-[11px] font-semibold transition">
+                                    <i class="fa-solid fa-trash"></i> Hapus
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-rose-500">Gagal memuat rekap jurnal.</td></tr>`;
+            }
+        }
+
+        function editJurnal(j) {
+            document.getElementById('edit-jurnal-id').value = j.id;
+            document.getElementById('input-tanggal-jurnal').value = j.tanggal;
+            document.getElementById('pilih-kelas-jurnal').value = j.kelas;
+            document.getElementById('jurnal-materi-pokok').value = j.materi_pokok;
+            document.getElementById('jurnal-materi-inti').value = j.materi_inti;
+            document.getElementById('jurnal-keterangan-teks').value = j.keterangan || '';
+            
+            document.getElementById('jurnal-form-title').innerHTML = `<i class="fa-solid fa-pen-to-square text-amber-600"></i> Edit Jurnal KBM (ID: ${j.id})`;
+            document.getElementById('btn-batal-edit').classList.remove('hidden');
+
+            muatSiswaUntukJurnal();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetFormJurnal() {
+            document.getElementById('edit-jurnal-id').value = '';
+            document.getElementById('jurnal-materi-pokok').value = '';
+            document.getElementById('jurnal-materi-inti').value = '';
+            document.getElementById('jurnal-keterangan-teks').value = '';
+            document.getElementById('pilih-kelas-jurnal').value = '';
+            document.getElementById('tabel-jurnal-siswa-body').innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-400 italic">Silakan pilih kelas terlebih dahulu pada panel di samping.</td></tr>`;
+            document.getElementById('badge-total-siswa-jurnal').innerText = `Total: 0 Siswa`;
+            document.getElementById('jurnal-form-title').innerHTML = `<i class="fa-solid fa-pen-nib text-indigo-600"></i> Detail Kurikulum KBM`;
+            document.getElementById('btn-batal-edit').classList.add('hidden');
+        }
+
+        async function hapusJurnal(id) {
+            if (!confirm("Apakah Anda yakin ingin menghapus rekap jurnal ini?")) return;
+
+            try {
+                const res = await fetch(`${SUPABASE_URL}jurnal_kbm?id=eq.${id}`, {
+                    method: "DELETE",
+                    headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
+                });
+
+                if (res.ok) {
+                    alert("Jurnal berhasil dihapus.");
+                    muatRekapJurnal();
+                } else {
+                    alert("Gagal menghapus jurnal.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Terjadi kesalahan jaringan.");
             }
         }
 
@@ -522,34 +680,46 @@
             const tbody = document.getElementById('tabel-perwalian-body');
             const badgeTotal = document.getElementById('badge-total-perwalian');
 
-            // Cek apakah guru ini memiliki kelas perwalian (bisa disesuaikan dari data wali_kelas)
             const kelasPerwalian = currentGuru.wali_kelas ? currentGuru.wali_kelas.split(',')[0].trim() : "";
 
             if (!kelasPerwalian) {
                 title.innerText = "Mode Wali Kelas (Tidak Ada Perwalian)";
                 desc.innerText = "Akun Anda terdaftar sebagai guru pengampu, bukan sebagai wali kelas.";
-                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400 italic">Anda tidak memiliki kelas perwalian terdaftar.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400 italic">Anda tidak memiliki kelas perwalian terdaftar.</td></tr>`;
                 badgeTotal.innerText = `Total: 0 Siswa`;
                 return;
             }
 
             title.innerText = `Mode Wali Kelas: ${kelasPerwalian}`;
-            desc.innerText = `Daftar lengkap siswa dan rekapitulasi kehadiran kelas perwalian Anda.`;
+            desc.innerText = `Daftar lengkap siswa, rekapitulasi kehadiran, dan catatan khusus perwalian Anda.`;
 
             try {
-                const res = await fetch(`${SUPABASE_URL}presensi?kelas=eq.${encodeURIComponent(kelasPerwalian)}&select=*`, {
-                    headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
-                });
-                const data = await res.json();
-                badgeTotal.innerText = `Total: ${data.length} Siswa`;
+                // Ambil data siswa & catatan wali kelas secara paralel
+                const [resSiswa, resCatatan] = await Promise.all([
+                    fetch(`${SUPABASE_URL}presensi?kelas=eq.${encodeURIComponent(kelasPerwalian)}&select=*`, {
+                        headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
+                    }),
+                    fetch(`${SUPABASE_URL}catatan_walikelas?kelas=eq.${encodeURIComponent(kelasPerwalian)}&select=*`, {
+                        headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
+                    })
+                ]);
 
-                if (data.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400 italic">Belum ada siswa di kelas perwalian ini.</td></tr>`;
+                const dataSiswa = await resSiswa.json();
+                const dataCatatan = await resCatatan.json();
+                badgeTotal.innerText = `Total: ${dataSiswa.length} Siswa`;
+
+                if (dataSiswa.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-400 italic">Belum ada siswa di kelas perwalian ini.</td></tr>`;
                     return;
                 }
 
+                // Buat mapping catatan berdasarkan NIS
+                const catatanMap = {};
+                dataCatatan.forEach(c => { catatanMap[c.nis] = c.catatan; });
+
                 tbody.innerHTML = "";
-                data.forEach((s, idx) => {
+                dataSiswa.forEach((s, idx) => {
+                    const existingCatatan = catatanMap[s.nis] || '';
                     tbody.innerHTML += `
                         <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
                             <td class="p-3">${idx + 1}</td>
@@ -557,11 +727,40 @@
                             <td class="p-3 font-semibold text-slate-800">${s.nama}</td>
                             <td class="p-3">${s.kelas}</td>
                             <td class="p-3 text-center font-bold text-emerald-700">${s.status || 'Hadir'}</td>
+                            <td class="p-3">
+                                <input type="text" id="catatan-${s.nis}" value="${existingCatatan}" placeholder="Ketik catatan siswa..." onblur="simpanCatatanSiswa('${s.nis}', '${s.kelas}')" class="w-full border border-slate-300 rounded p-1.5 text-xs focus:ring-2 focus:ring-emerald-500 bg-white">
+                            </td>
                         </tr>
                     `;
                 });
             } catch (err) {
                 console.error(err);
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-rose-500">Gagal memuat data perwalian.</td></tr>`;
+            }
+        }
+
+        async function simpanCatatanSiswa(nis, kelas) {
+            const inputVal = document.getElementById(`catatan-${nis}`).value.trim();
+
+            try {
+                // Lakukan upsert ke tabel `catatan_walikelas` berdasarkan kombinasi unik nis & kelas
+                await fetch(`${SUPABASE_URL}catatan_walikelas`, {
+                    method: "POST",
+                    headers: { 
+                        "apikey": SUPABASE_KEY, 
+                        "Authorization": "Bearer " + SUPABASE_KEY, 
+                        "Content-Type": "application/json", 
+                        "Prefer": "resolution=merge-duplicates,return=minimal" 
+                    },
+                    body: JSON.stringify({
+                        nis: nis,
+                        kelas: kelas,
+                        catatan: inputVal,
+                        updated_at: new Date().toISOString()
+                    })
+                });
+            } catch (err) {
+                console.error("Gagal menyimpan catatan otomatis:", err);
             }
         }
 
