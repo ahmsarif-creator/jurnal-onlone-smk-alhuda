@@ -442,7 +442,7 @@
         let cacheDataNilaiKelas = []; 
         let cacheDataPresensiKelas = [];
 
-        window.addEventListener('DOMContentLoaded', async () => {
+        window.addEventListener('DOMContentLoaded', () => {
             const sessionData = localStorage.getItem('session_guru');
             if (!sessionData) {
                 alert("Sesi login tidak ditemukan. Silakan login terlebih dahulu.");
@@ -459,7 +459,7 @@
             const todayStr = new Date().toISOString().split('T')[0];
             document.getElementById('input-tanggal-jurnal').value = todayStr;
 
-            await isiDropdownKelasSemua();
+            isiDropdownKelasSemua();
             muatRekapJurnal();
             muatDataWaliKelas();
         });
@@ -488,39 +488,13 @@
             window.location.reload(); 
         }
 
-        async function isiDropdownKelasSemua() {
+        function isiDropdownKelasSemua() {
             const selectJurnal = document.getElementById('pilih-kelas-jurnal');
             const selectAbsensi = document.getElementById('pilih-kelas-absensi-tab');
             const selectNilai = document.getElementById('pilih-kelas-nilai');
 
-            let daftarKelasUnik = new Set();
-
-            // 1. Masukkan kelas dari data wali kelas jika ada
-            if (currentGuru.wali_kelas) {
-                currentGuru.wali_kelas.split(',').forEach(k => {
-                    if (k.trim()) daftarKelasUnik.add(k.trim());
-                });
-            }
-
-            // 2. Ambil daftar kelas dari database presensi/siswa secara otomatis agar semua kelas yang diampu guru muncul
-            try {
-                const res = await fetch(`${SUPABASE_URL}presensi?select=kelas`, {
-                    headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
-                });
-                const data = await res.json();
-                if (Array.isArray(data)) {
-                    data.forEach(item => {
-                        if (item.kelas) daftarKelasUnik.add(item.kelas.trim());
-                    });
-                }
-            } catch (err) {
-                console.error("Gagal memuat daftar kelas otomatis:", err);
-            }
-
-            let optionsHTML = `<option value="">-- Pilih Kelas --</option>`;
-            Array.from(daftarKelasUnik).sort().forEach(k => {
-                optionsHTML += `<option value="${k}">${k}</option>`;
-            });
+            const optionsHTML = `<option value="">-- Pilih Kelas --</option>` + 
+                (currentGuru.wali_kelas ? currentGuru.wali_kelas.split(',').map(k => `<option value="${k.trim()}">${k.trim()}</option>`).join('') : '');
 
             selectJurnal.innerHTML = optionsHTML;
             selectAbsensi.innerHTML = optionsHTML;
@@ -855,7 +829,7 @@
                 const dataSiswa = await resSiswa.json();
                 const dataCatatan = await resCatatan.json();
                 cacheDataNilaiKelas = await resNilaiAll.json();
-                cacheDataPresensiKelas = dataSiswa; 
+                cacheDataPresensiKelas = dataSiswa; // Menyimpan data presensi dasar kelas
                 const dataJurnalAll = await resJurnalAll.json();
 
                 badgeTotal.innerText = `Total: ${dataSiswa.length} Siswa`;
@@ -948,6 +922,7 @@
                 const rataRata = validCount > 0 ? (totalNilaiAngka / validCount).toFixed(1) : "0.0";
                 const persentaseTuntas = validCount > 0 ? Math.round((countTuntas / validCount) * 100) : 0;
                 
+                // Hitung statistik persentase kehadiran kelas
                 let totalHadir = 0;
                 dataSiswa.forEach(s => {
                     if (!s.status || s.status === 'Hadir') totalHadir++;
@@ -981,6 +956,7 @@
                 const existingCatatan = catatanMap[s.nis] || '';
                 const nilaiVal = nilaiMapelList ? (nilaiMap[s.nis] !== undefined ? nilaiMap[s.nis] : '<span class="text-slate-400 italic">-</span>') : '<span class="text-slate-400 italic">Pilih Mapel</span>';
                 
+                // Badge Status Kehadiran Per Siswa
                 let badgeStatus = `<span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full text-[11px] font-bold">Hadir</span>`;
                 if (s.status === 'Sakit') badgeStatus = `<span class="bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full text-[11px] font-bold">Sakit</span>`;
                 else if (s.status === 'Izin') badgeStatus = `<span class="bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full text-[11px] font-bold">Izin</span>`;
