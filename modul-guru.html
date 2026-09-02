@@ -80,7 +80,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-slate-800 text-sm sm:text-base" id="title-form-guru">Registrasi Akun Guru Baru</h3>
-                            <p class="text-[11px] text-slate-500" id="desc-form-guru">Atur akun, mata pelajaran, serta kelas yang diampu.</p>
+                            <p class="text-[11px] text-slate-500" id="desc-form-guru">Atur akun, mata pelajaran, serta status wali kelas.</p>
                         </div>
                     </div>
 
@@ -106,41 +106,57 @@
                             <input type="text" id="reg-tugas-guru" placeholder="Contoh: Produktif TKJ / Matematika" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none">
                         </div>
 
-                        <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-2.5">
-                            <label class="block text-xs font-bold text-slate-700 flex items-center justify-between">
-                                <span><i class="fa-solid fa-chalkboard text-amber-600 mr-1"></i> Daftar Kelas & Rombel yang Diampu</span>
-                                <span class="text-[10px] text-slate-400 font-normal">Pilih & tambahkan daftar kelas</span>
-                            </label>
-                            
-                            <div class="grid grid-cols-3 gap-2">
-                                <div>
-                                    <select id="input-pilih-tingkat" class="w-full border border-slate-300 rounded-lg p-1.5 text-xs bg-white">
-                                        <option value="X">Kelas X</option>
-                                        <option value="XI">Kelas XI</option>
-                                        <option value="XII">Kelas XII</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <select id="input-pilih-jurusan" class="w-full border border-slate-300 rounded-lg p-1.5 text-xs bg-white">
-                                        <option value="TKJ">TKJ</option>
-                                        <option value="TITL">TITL</option>
-                                        <option value="TKR">TKR</option>
-                                        <option value="TSM">TSM</option>
-                                        <option value="TPM">TPM</option>
-                                        <option value="PF">PF</option>
-                                    </select>
-                                </div>
-                                <div class="flex gap-1">
-                                    <select id="input-pilih-rombel" class="w-full border border-slate-300 rounded-lg p-1.5 text-xs bg-white">
-                                        <option value="1">Rombel 1</option>
-                                        <option value="2">Rombel 2</option>
-                                    </select>
-                                    <button type="button" onclick="tambahDaftarKelasGuru()" class="bg-amber-600 hover:bg-amber-700 text-white px-2.5 rounded-lg text-xs font-bold transition shadow-sm" title="Tambah Kelas"><i class="fa-solid fa-plus"></i></button>
-                                </div>
+                        <!-- Pilihan Status Wali Kelas -->
+                        <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl space-y-3">
+                            <label class="block text-xs font-bold text-slate-700">Status Kepegawaian / Tugas Tambahan</label>
+                            <div class="flex gap-4">
+                                <label class="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                    <input type="radio" name="status-wali" value="bukan" checked onchange="toggleOpsiWaliKelas()" class="text-amber-600 focus:ring-amber-500">
+                                    Bukan Wali Kelas
+                                </label>
+                                <label class="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                    <input type="radio" name="status-wali" value="ya" onchange="toggleOpsiWaliKelas()" class="text-amber-600 focus:ring-amber-500">
+                                    Wali Kelas
+                                </label>
                             </div>
 
-                            <div id="container-badge-kelas" class="flex flex-wrap gap-1.5 pt-1 min-h-[32px] items-center">
-                                <span class="text-[11px] text-slate-400 italic">Belum ada kelas yang ditambahkan. Klik tombol (+) untuk memasukkan kelas.</span>
+                            <!-- Kontainer Pilihan Kelas (Hidden by default) -->
+                            <div id="wrapper-pilihan-kelas" class="hidden space-y-2.5 pt-2 border-t border-slate-200">
+                                <label class="block text-xs font-bold text-slate-700 flex items-center justify-between">
+                                    <span><i class="fa-solid fa-chalkboard text-amber-600 mr-1"></i> Pilih Kelas Binaan Wali Kelas</span>
+                                    <span class="text-[10px] text-slate-400 font-normal">Pilih & tambahkan kelas</span>
+                                </label>
+                                
+                                <div class="grid grid-cols-3 gap-2">
+                                    <div>
+                                        <select id="input-pilih-tingkat" class="w-full border border-slate-300 rounded-lg p-1.5 text-xs bg-white">
+                                            <option value="X">Kelas X</option>
+                                            <option value="XI">Kelas XI</option>
+                                            <option value="XII">Kelas XII</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <select id="input-pilih-jurusan" class="w-full border border-slate-300 rounded-lg p-1.5 text-xs bg-white">
+                                            <option value="TKJ">TKJ</option>
+                                            <option value="TITL">TITL</option>
+                                            <option value="TKR">TKR</option>
+                                            <option value="TSM">TSM</option>
+                                            <option value="TPM">TPM</option>
+                                            <option value="PF">PF</option>
+                                        </select>
+                                    </div>
+                                    <div class="flex gap-1">
+                                        <select id="input-pilih-rombel" class="w-full border border-slate-300 rounded-lg p-1.5 text-xs bg-white">
+                                            <option value="1">Rombel 1</option>
+                                            <option value="2">Rombel 2</option>
+                                        </select>
+                                        <button type="button" onclick="tambahDaftarKelasGuru()" class="bg-amber-600 hover:bg-amber-700 text-white px-2.5 rounded-lg text-xs font-bold transition shadow-sm" title="Tambah Kelas"><i class="fa-solid fa-plus"></i></button>
+                                    </div>
+                                </div>
+
+                                <div id="container-badge-kelas" class="flex flex-wrap gap-1.5 pt-1 min-h-[32px] items-center">
+                                    <span class="text-[11px] text-slate-400 italic">Belum ada kelas yang ditambahkan. Klik tombol (+) untuk memasukkan kelas.</span>
+                                </div>
                             </div>
                         </div>
 
@@ -229,9 +245,9 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                 <div>
                     <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
-                        <i class="fa-solid fa-chalkboard-user text-emerald-600"></i> Daftar Pengajar & Kelas Diampu
+                        <i class="fa-solid fa-chalkboard-user text-emerald-600"></i> Daftar Pengajar & Status Wali Kelas
                     </h3>
-                    <p class="text-xs text-slate-500">Daftar akun pengajar yang aktif di dalam database Supabase beserta pemetaan kelasnya.</p>
+                    <p class="text-xs text-slate-500">Daftar akun pengajar yang aktif di dalam database Supabase beserta status kelas binaannya.</p>
                 </div>
                 <button onclick="muatDataGuru()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-2 rounded-lg transition flex items-center gap-1.5 border border-slate-300">
                     <i class="fa-solid fa-rotate"></i> <span>Muat Ulang Data</span>
@@ -246,7 +262,7 @@
                             <th class="p-3">Nama & Gelar</th>
                             <th class="p-3">NIP / ID (Login)</th>
                             <th class="p-3">Mata Pelajaran</th>
-                            <th class="p-3">Kelas / Rombel yang Diampu</th>
+                            <th class="p-3">Status / Kelas Wali Kelas</th>
                             <th class="p-3 text-center">Aksi / Edit</th>
                         </tr>
                     </thead>
@@ -275,6 +291,20 @@
         window.addEventListener('DOMContentLoaded', () => {
             muatDataGuru();
         });
+
+        // Mengatur tampil/sembunyi opsi pilihan kelas wali kelas
+        function toggleOpsiWaliKelas() {
+            const statusWali = document.querySelector('input[name="status-wali"]:checked').value;
+            const wrapper = document.getElementById('wrapper-pilihan-kelas');
+            
+            if (statusWali === 'ya') {
+                wrapper.classList.remove('hidden');
+            } else {
+                wrapper.classList.add('hidden');
+                daftarKelasPilihanGuru = []; // Reset pilihan kelas jika bukan wali kelas
+                renderBadgeKelasGuru();
+            }
+        }
 
         // Tambah kelas ke daftar pilihan guru secara interaktif
         function tambahDaftarKelasGuru() {
@@ -325,6 +355,7 @@
             const nip = document.getElementById('reg-nip-guru').value.trim();
             const password = document.getElementById('reg-password-guru').value.trim();
             const tugas = document.getElementById('reg-tugas-guru').value.trim();
+            const statusWali = document.querySelector('input[name="status-wali"]:checked').value;
             const adminPasswordInput = document.getElementById('reg-admin-password').value.trim();
 
             if (!nama || !nip || !password) {
@@ -337,7 +368,15 @@
                 return;
             }
 
-            const kelasDiampuString = daftarKelasPilihanGuru.join(", ");
+            // Jika bukan wali kelas, nilai wali_kelas dikosongkan/null
+            let kelasDiampuString = null;
+            if (statusWali === 'ya') {
+                if (daftarKelasPilihanGuru.length === 0) {
+                    alert("Harap pilih minimal satu kelas binaan untuk status Wali Kelas.");
+                    return;
+                }
+                kelasDiampuString = daftarKelasPilihanGuru.join(", ");
+            }
 
             try {
                 let response;
@@ -393,8 +432,16 @@
             document.getElementById('reg-tugas-guru').value = guru.tugas || '';
             document.getElementById('reg-admin-password').value = 'adminsmk123'; // auto-isi untuk kemudahan admin
 
-            // Pecah string kelas wali_kelas ke badge
-            daftarKelasPilihanGuru = guru.wali_kelas ? guru.wali_kelas.split(',').map(k => k.trim()).filter(k => k) : [];
+            // Atur status radio button berdasarkan ada tidaknya data wali_kelas
+            if (guru.wali_kelas && guru.wali_kelas.trim() !== "") {
+                document.querySelector('input[name="status-wali"][value="ya"]').checked = true;
+                daftarKelasPilihanGuru = guru.wali_kelas.split(',').map(k => k.trim()).filter(k => k);
+                document.getElementById('wrapper-pilihan-kelas').classList.remove('hidden');
+            } else {
+                document.querySelector('input[name="status-wali"][value="bukan"]').checked = true;
+                daftarKelasPilihanGuru = [];
+                document.getElementById('wrapper-pilihan-kelas').classList.add('hidden');
+            }
             renderBadgeKelasGuru();
 
             // Ubah Tampilan Header Form jadi Mode Edit
@@ -420,11 +467,13 @@
             document.getElementById('reg-password-guru').value = '';
             document.getElementById('reg-tugas-guru').value = '';
             document.getElementById('reg-admin-password').value = '';
+            document.querySelector('input[name="status-wali"][value="bukan"]').checked = true;
+            document.getElementById('wrapper-pilihan-kelas').classList.add('hidden');
             daftarKelasPilihanGuru = [];
             renderBadgeKelasGuru();
 
             document.getElementById('title-form-guru').innerText = "Registrasi Akun Guru Baru";
-            document.getElementById('desc-form-guru').innerText = "Atur akun, mata pelajaran, serta kelas yang diampu.";
+            document.getElementById('desc-form-guru').innerText = "Atur akun, mata pelajaran, serta status wali kelas.";
             document.getElementById('icon-form-header').className = "w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-lg shadow-sm";
             document.getElementById('icon-form-i').className = "fa-solid fa-user-plus";
             document.getElementById('btn-submit-guru').innerHTML = `<i class="fa-solid fa-user-check"></i> Simpan & Daftarkan Akun Guru`;
@@ -491,13 +540,18 @@
 
                     tbody.innerHTML = "";
                     data.forEach((guru, index) => {
+                        let statusWaliHtml = `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded font-medium">Bukan Wali Kelas</span>`;
+                        if (guru.wali_kelas && guru.wali_kelas.trim() !== "") {
+                            statusWaliHtml = `<span class="bg-amber-50 text-amber-700 px-2 py-1 rounded font-medium">Wali Kelas: ${guru.wali_kelas}</span>`;
+                        }
+
                         tbody.innerHTML += `
                             <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
                                 <td class="p-3">${index + 1}</td>
                                 <td class="p-3 font-semibold text-slate-800">${guru.nama}</td>
                                 <td class="p-3 text-slate-600">${guru.nip}</td>
                                 <td class="p-3 text-slate-600">${guru.tugas || '-'}</td>
-                                <td class="p-3"><span class="bg-amber-50 text-amber-700 px-2 py-1 rounded font-medium">${guru.wali_kelas || 'Tidak ada kelas'}</span></td>
+                                <td class="p-3">${statusWaliHtml}</td>
                                 <td class="p-3 text-center">
                                     <button onclick="siapkanEditGuru(${guru.id})" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded-md font-semibold text-xs transition border border-indigo-200">
                                         <i class="fa-solid fa-pen-to-square mr-1"></i> Edit Akun
