@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Styling khusus untuk mode Cetak / Print -->
+    <!-- Styling khusus untuk mode Cetak / Print (Kop Surat & Sembunyikan Navigasi) -->
     <style>
         @media print {
             body {
@@ -328,13 +328,13 @@
             <!-- Bagian Filter Sorot Per Mata Pelajaran -->
             <div class="bg-white rounded-xl shadow-sm p-5 border border-slate-200 space-y-4">
                 <h3 class="font-bold text-slate-800 text-sm sm:text-base flex items-center gap-2">
-                    <i class="fa-solid fa-filter text-emerald-600"></i> Sorot Rekapitulasi Berdasarkan Mata Pelajaran / Guru Lain
+                    <i class="fa-solid fa-filter text-emerald-600"></i> Sorot Rekapitulasi Berdasarkan Mata Pelajaran Lain
                 </h3>
-                <p class="text-xs text-slate-500">Pilih mata pelajaran atau guru pengampu lain untuk menampilkan persentase nilai serta detail kehadiran siswa pada mapel tersebut.</p>
+                <p class="text-xs text-slate-500">Pilih mata pelajaran yang diajar oleh guru lain di kelas perwalian Anda untuk memantau nilai dan jurnal harian mereka.</p>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Mata Pelajaran / Guru Lain</label>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Mata Pelajaran</label>
                         <select id="filter-mapel-walikelas" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs bg-white font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                             <option value="">-- Semua Mata Pelajaran --</option>
                         </select>
@@ -346,32 +346,28 @@
                     </div>
                 </div>
 
-                <!-- Kotak Ringkasan Statistik Nilai & Persentase Kehadiran Mapel Terpilih -->
-                <div id="box-statistik-mapel" class="hidden grid grid-cols-1 sm:grid-cols-4 gap-4 pt-3 border-t border-slate-100">
+                <!-- Kotak Ringkasan Presentase / Statistik Nilai Mapel Terpilih -->
+                <div id="box-statistik-mapel" class="hidden grid grid-cols-1 sm:grid-cols-3 gap-4 pt-3 border-t border-slate-100">
                     <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-xl text-center">
-                        <p class="text-[11px] text-emerald-700 font-semibold uppercase">Rata-Rata Nilai</p>
+                        <p class="text-[11px] text-emerald-700 font-semibold uppercase">Rata-Rata Kelas</p>
                         <h4 id="stat-rata-rata" class="text-xl font-extrabold text-emerald-900 mt-1">0.0</h4>
                     </div>
                     <div class="bg-blue-50 border border-blue-200 p-3.5 rounded-xl text-center">
-                        <p class="text-[11px] text-blue-700 font-semibold uppercase">Tuntas Nilai (&ge; 75)</p>
-                        <h4 id="stat-tuntas" class="text-xl font-extrabold text-blue-900 mt-1">0 (0%)</h4>
-                    </div>
-                    <div class="bg-teal-50 border border-teal-200 p-3.5 rounded-xl text-center">
-                        <p class="text-[11px] text-teal-700 font-semibold uppercase">Persentase Kehadiran</p>
-                        <h4 id="stat-kehadiran-persen" class="text-xl font-extrabold text-teal-900 mt-1">0%</h4>
+                        <p class="text-[11px] text-blue-700 font-semibold uppercase">Tuntas (&ge; 75)</p>
+                        <h4 id="stat-tuntas" class="text-xl font-extrabold text-blue-900 mt-1">0 Siswa (0%)</h4>
                     </div>
                     <div class="bg-amber-50 border border-amber-200 p-3.5 rounded-xl text-center">
                         <p class="text-[11px] text-amber-700 font-semibold uppercase">Remedial (&lt; 75)</p>
-                        <h4 id="stat-remedial" class="text-xl font-extrabold text-amber-900 mt-1">0 (0%)</h4>
+                        <h4 id="stat-remedial" class="text-xl font-extrabold text-amber-900 mt-1">0 Siswa (0%)</h4>
                     </div>
                 </div>
             </div>
 
-            <!-- Tabel Data Siswa Perwalian, Catatan & Nilai/Kehadiran Guru Lain -->
+            <!-- Tabel Data Siswa Perwalian, Catatan & Nilai Guru Lain -->
             <div class="bg-white rounded-xl shadow-sm p-6 border border-slate-200 space-y-4">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                     <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
-                        <i class="fa-solid fa-graduation-cap text-emerald-600"></i> Daftar Siswa Perwalian, Nilai, Kehadiran & Catatan
+                        <i class="fa-solid fa-graduation-cap text-emerald-600"></i> Daftar Siswa Perwalian, Nilai Mapel & Catatan Khusus
                     </h3>
                     <span id="badge-total-perwalian" class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-semibold">Total: 0 Siswa</span>
                 </div>
@@ -384,7 +380,7 @@
                                 <th class="p-3">NIS</th>
                                 <th class="p-3">Nama Siswa</th>
                                 <th class="p-3">Kelas / Rombel</th>
-                                <th class="p-3 text-center" id="th-label-kehadiran-mapel">Kehadiran Mapel</th>
+                                <th class="p-3 text-center">Kehadiran</th>
                                 <th class="p-3 text-center" id="th-label-nilai-mapel">Nilai Mapel Terpilih</th>
                                 <th class="p-3">Catatan Wali Kelas (Bisa Diketik)</th>
                             </tr>
@@ -439,47 +435,34 @@
         let currentGuru = null;
         let daftarSiswaJurnal = [];
         let daftarSiswaNilai = [];
-        let cacheDataNilaiKelas = []; 
-        let cacheDataPresensiKelas = [];
+        let cacheDataNilaiKelas = []; // Menyimpan data nilai dari semua guru untuk kelas perwalian
 
-        window.addEventListener('DOMContentLoaded', async () => {
-            const sessionData = localStorage.getItem('session_guru') || 
-                                localStorage.getItem('guru_login') || 
-                                localStorage.getItem('active_guru');
-
+        window.addEventListener('DOMContentLoaded', () => {
+            const sessionData = localStorage.getItem('session_guru');
             if (!sessionData) {
                 alert("Sesi login tidak ditemukan. Silakan login terlebih dahulu.");
                 window.location.href = "modul-guru.html";
                 return;
             }
 
-            try {
-                currentGuru = JSON.parse(sessionData);
-            } catch (e) {
-                console.error("Format data sesi rusak:", e);
-                window.location.href = "modul-guru.html";
-                return;
-            }
+            currentGuru = JSON.parse(sessionData);
 
-            document.getElementById('info-nama-guru').innerText = `${currentGuru.nama || 'Guru'} (${currentGuru.tugas || 'Guru Pengampu'})`;
-            document.getElementById('salam-jurnal').innerText = `Selamat Datang, ${currentGuru.nama || 'Guru'}`;
+            // Set Header & Informasi Guru
+            document.getElementById('info-nama-guru').innerText = `${currentGuru.nama} (${currentGuru.tugas || 'Guru Pengampu'})`;
+            document.getElementById('salam-jurnal').innerText = `Selamat Datang, ${currentGuru.nama}`;
             document.getElementById('jurnal-mapel').value = currentGuru.tugas || 'Mata Pelajaran Umum';
 
+            // Set Tanggal Hari Ini ke Input Tanggal
             const todayStr = new Date().toISOString().split('T')[0];
             document.getElementById('input-tanggal-jurnal').value = todayStr;
 
-            await isiDropdownKelasSemua();
+            // Inisialisasi Dropdown Kelas & Data Rekap
+            isiDropdownKelasSemua();
             muatRekapJurnal();
             muatDataWaliKelas();
-
-            // Cek jika ada perintah dari modul-guru untuk langsung membuka tab wali kelas
-            const targetTab = sessionStorage.getItem('buka_tab');
-            if (targetTab === 'walikelas') {
-                gantiTab('walikelas');
-                sessionStorage.removeItem('buka_tab');
-            }
         });
 
+        // Ganti Menu Tab
         function gantiTab(tabName) {
             ['jurnal', 'absensi', 'nilai', 'walikelas'].forEach(t => {
                 document.getElementById(`content-${t}`).classList.add('hidden');
@@ -490,6 +473,7 @@
             document.getElementById(`tab-btn-${tabName}`).className = "py-3 px-4 border-b-2 font-semibold text-xs sm:text-sm flex items-center gap-2 transition border-indigo-600 text-indigo-600 whitespace-nowrap";
         }
 
+        // Fungsi Universal Print / Cetak Bagian Tertentu
         function cetakArea(areaId) {
             const printContent = document.getElementById(areaId).innerHTML;
             const originalContent = document.body.innerHTML;
@@ -504,42 +488,18 @@
             window.location.reload(); 
         }
 
-        // FUNGSI UTAMA: Mengambil daftar kelas unik dari database Supabase (tabel presensi) & wali kelas
-        async function isiDropdownKelasSemua() {
+        // Isi semua dropdown kelas berdasarkan kelas yang diampu guru
+        function isiDropdownKelasSemua() {
             const selectJurnal = document.getElementById('pilih-kelas-jurnal');
             const selectAbsensi = document.getElementById('pilih-kelas-absensi-tab');
             const selectNilai = document.getElementById('pilih-kelas-nilai');
 
-            let daftarKelasUnik = new Set();
+            const optionsHTML = `<option value="">-- Pilih Kelas --</option>` + 
+                (currentGuru.wali_kelas ? currentGuru.wali_kelas.split(',').map(k => `<option value="${k.trim()}">${k.trim()}</option>`).join('') : '');
 
-            if (currentGuru && currentGuru.wali_kelas) {
-                currentGuru.wali_kelas.split(',').forEach(k => {
-                    if (k.trim()) daftarKelasUnik.add(k.trim());
-                });
-            }
-
-            try {
-                const res = await fetch(`${SUPABASE_URL}presensi?select=kelas`, {
-                    headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
-                });
-                const data = await res.json();
-                if (Array.isArray(data)) {
-                    data.forEach(item => {
-                        if (item.kelas) daftarKelasUnik.add(item.kelas.trim());
-                    });
-                }
-            } catch (err) {
-                console.error("Gagal memuat daftar kelas dari database:", err);
-            }
-
-            let optionsHTML = `<option value="">-- Pilih Kelas --</option>`;
-            Array.from(daftarKelasUnik).sort().forEach(k => {
-                optionsHTML += `<option value="${k}">${k}</option>`;
-            });
-
-            if (selectJurnal) selectJurnal.innerHTML = optionsHTML;
-            if (selectAbsensi) selectAbsensi.innerHTML = optionsHTML;
-            if (selectNilai) selectNilai.innerHTML = optionsHTML;
+            selectJurnal.innerHTML = optionsHTML;
+            selectAbsensi.innerHTML = optionsHTML;
+            selectNilai.innerHTML = optionsHTML;
         }
 
         // ================= TAB 1: JURNAL & ABSENSI =================
@@ -566,7 +526,7 @@
                 badgeTotal.innerText = `Total: ${data.length} Siswa`;
 
                 if (data.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-rose-500 italic">Belum ada database siswa untuk kelas ini.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-rose-500 italic">Belum ada database siswa untuk kelas ini. Upload via Modul Guru.</td></tr>`;
                     return;
                 }
 
@@ -590,6 +550,7 @@
                 });
             } catch (err) {
                 console.error(err);
+                tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-rose-500">Gagal memuat data siswa.</td></tr>`;
             }
         }
 
@@ -675,14 +636,19 @@
                             <td class="p-3 text-slate-600">${j.materi_inti}</td>
                             <td class="p-3 text-slate-500">${j.keterangan || '-'}</td>
                             <td class="p-3 text-center space-x-1 whitespace-nowrap no-print">
-                                <button onclick='editJurnal(${JSON.stringify(j)})' class="bg-amber-500 hover:bg-amber-600 text-white px-2.5 py-1 rounded text-[11px] font-semibold transition">Edit</button>
-                                <button onclick="hapusJurnal(${j.id})" class="bg-rose-500 hover:bg-rose-600 text-white px-2.5 py-1 rounded text-[11px] font-semibold transition">Hapus</button>
+                                <button onclick='editJurnal(${JSON.stringify(j)})' class="bg-amber-500 hover:bg-amber-600 text-white px-2.5 py-1 rounded text-[11px] font-semibold transition">
+                                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                                </button>
+                                <button onclick="hapusJurnal(${j.id})" class="bg-rose-500 hover:bg-rose-600 text-white px-2.5 py-1 rounded text-[11px] font-semibold transition">
+                                    <i class="fa-solid fa-trash"></i> Hapus
+                                </button>
                             </td>
                         </tr>
                     `;
                 });
             } catch (err) {
                 console.error(err);
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-rose-500">Gagal memuat rekap jurnal.</td></tr>`;
             }
         }
 
@@ -693,8 +659,10 @@
             document.getElementById('jurnal-materi-pokok').value = j.materi_pokok;
             document.getElementById('jurnal-materi-inti').value = j.materi_inti;
             document.getElementById('jurnal-keterangan-teks').value = j.keterangan || '';
+            
             document.getElementById('jurnal-form-title').innerHTML = `<i class="fa-solid fa-pen-to-square text-amber-600"></i> Edit Jurnal KBM (ID: ${j.id})`;
             document.getElementById('btn-batal-edit').classList.remove('hidden');
+
             muatSiswaUntukJurnal();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -721,6 +689,8 @@
                 if (res.ok) {
                     alert("Jurnal berhasil dihapus.");
                     muatRekapJurnal();
+                } else {
+                    alert("Gagal menghapus jurnal.");
                 }
             } catch (err) {
                 console.error(err);
@@ -743,6 +713,11 @@
                 });
                 const data = await res.json();
                 
+                if (data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400 italic">Tidak ada data siswa.</td></tr>`;
+                    return;
+                }
+
                 tbody.innerHTML = "";
                 data.forEach((s, idx) => {
                     tbody.innerHTML += `
@@ -824,9 +799,14 @@
                     body: JSON.stringify(payload)
                 });
 
-                if (res.ok) alert("Daftar nilai siswa berhasil disimpan!");
+                if (res.ok) {
+                    alert("Daftar nilai siswa berhasil disimpan ke database!");
+                } else {
+                    alert("Gagal menyimpan daftar nilai.");
+                }
             } catch (err) {
                 console.error(err);
+                alert("Terjadi kesalahan jaringan.");
             }
         }
 
@@ -838,18 +818,18 @@
             const badgeTotal = document.getElementById('badge-total-perwalian');
             const selectMapel = document.getElementById('filter-mapel-walikelas');
 
-            const kelasPerwalian = currentGuru && currentGuru.wali_kelas ? currentGuru.wali_kelas.split(',')[0].trim() : "";
+            const kelasPerwalian = currentGuru.wali_kelas ? currentGuru.wali_kelas.split(',')[0].trim() : "";
 
             if (!kelasPerwalian) {
-                if(title) title.innerText = "Mode Wali Kelas (Tidak Ada Perwalian)";
-                if(desc) desc.innerText = "Akun Anda terdaftar sebagai guru pengampu, bukan sebagai wali kelas.";
-                if(tbody) tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 italic">Anda tidak memiliki kelas perwalian terdaftar.</td></tr>`;
-                if(badgeTotal) badgeTotal.innerText = `Total: 0 Siswa`;
+                title.innerText = "Mode Wali Kelas (Tidak Ada Perwalian)";
+                desc.innerText = "Akun Anda terdaftar sebagai guru pengampu, bukan sebagai wali kelas.";
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 italic">Anda tidak memiliki kelas perwalian terdaftar.</td></tr>`;
+                badgeTotal.innerText = `Total: 0 Siswa`;
                 return;
             }
 
-            if(title) title.innerText = `Mode Wali Kelas: ${kelasPerwalian}`;
-            if(desc) desc.innerText = `Daftar lengkap siswa, persentase kehadiran, rekapitulasi nilai guru lain, serta catatan khusus perwalian.`;
+            title.innerText = `Mode Wali Kelas: ${kelasPerwalian}`;
+            desc.innerText = `Daftar lengkap siswa, rekapitulasi nilai guru lain, jurnal, serta catatan khusus perwalian Anda.`;
 
             try {
                 const [resSiswa, resCatatan, resNilaiAll, resJurnalAll] = await Promise.all([
@@ -870,34 +850,35 @@
                 const dataSiswa = await resSiswa.json();
                 const dataCatatan = await resCatatan.json();
                 cacheDataNilaiKelas = await resNilaiAll.json();
-                cacheDataPresensiKelas = dataSiswa; 
                 const dataJurnalAll = await resJurnalAll.json();
 
-                if(badgeTotal) badgeTotal.innerText = `Total: ${dataSiswa.length} Siswa`;
+                badgeTotal.innerText = `Total: ${dataSiswa.length} Siswa`;
 
+                // Ambil daftar unik nama guru pengampu / mapel dari data nilai
                 const mapelSet = new Set();
                 cacheDataNilaiKelas.forEach(n => {
                     if (n.guru_pengampu) mapelSet.add(n.guru_pengampu);
                 });
 
-                if(selectMapel) {
-                    selectMapel.innerHTML = `<option value="">-- Semua Mata Pelajaran --</option>`;
-                    mapelSet.forEach(m => {
-                        selectMapel.innerHTML += `<option value="${m}">${m}</option>`;
-                    });
-                }
+                selectMapel.innerHTML = `<option value="">-- Pilih Mata Pelajaran / Guru Lain --</option>`;
+                mapelSet.forEach(m => {
+                    selectMapel.innerHTML += `<option value="${m}">${m}</option>`;
+                });
 
+                // Tampilkan Jurnal Pengajar Lain
                 renderJurnalWaliKelas(dataJurnalAll);
-                renderTabelPerwalian(dataSiswa, dataCatatan, null, null);
+
+                // Render tabel siswa perwalian awal (tanpa sorotan nilai khusus)
+                renderTabelPerwalian(dataSiswa, dataCatatan, null);
 
             } catch (err) {
                 console.error(err);
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-rose-500">Gagal memuat data perwalian.</td></tr>`;
             }
         }
 
         function renderJurnalWaliKelas(jurnalList) {
             const tbody = document.getElementById('tabel-jurnal-walikelas-body');
-            if (!tbody) return;
             if (jurnalList.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400 italic">Belum ada jurnal pengajar lain untuk kelas ini.</td></tr>`;
                 return;
@@ -919,22 +900,19 @@
 
         async function muatRekapMapelWaliKelas() {
             const selectedGuruMapel = document.getElementById('filter-mapel-walikelas').value;
-            const kelasPerwalian = currentGuru && currentGuru.wali_kelas ? currentGuru.wali_kelas.split(',')[0].trim() : "";
+            const kelasPerwalian = currentGuru.wali_kelas ? currentGuru.wali_kelas.split(',')[0].trim() : "";
             const thNilai = document.getElementById('th-label-nilai-mapel');
-            const thKehadiran = document.getElementById('th-label-kehadiran-mapel');
             const boxStat = document.getElementById('box-statistik-mapel');
 
             if (!selectedGuruMapel) {
-                if(thNilai) thNilai.innerText = "Nilai Mapel Terpilih";
-                if(thKehadiran) thKehadiran.innerText = "Kehadiran Mapel";
-                if(boxStat) boxStat.classList.add('hidden');
+                thNilai.innerText = "Nilai Mapel Terpilih";
+                boxStat.classList.add('hidden');
                 muatDataWaliKelas();
                 return;
             }
 
-            if(thNilai) thNilai.innerText = `Nilai (${selectedGuruMapel})`;
-            if(thKehadiran) thKehadiran.innerText = `Kehadiran (${selectedGuruMapel})`;
-            if(boxStat) boxStat.classList.remove('hidden');
+            thNilai.innerText = `Nilai (${selectedGuruMapel})`;
+            boxStat.classList.remove('hidden');
 
             try {
                 const [resSiswa, resCatatan] = await Promise.all([
@@ -949,8 +927,10 @@
                 const dataSiswa = await resSiswa.json();
                 const dataCatatan = await resCatatan.json();
 
+                // Filter nilai berdasarkan guru pengampu / mapel terpilih
                 const filteredNilai = cacheDataNilaiKelas.filter(n => n.guru_pengampu === selectedGuruMapel);
                 
+                // Hitung statistik persentase
                 let totalNilaiAngka = 0;
                 let countTuntas = 0;
                 let countRemedial = 0;
@@ -965,31 +945,25 @@
 
                 const rataRata = validCount > 0 ? (totalNilaiAngka / validCount).toFixed(1) : "0.0";
                 const persentaseTuntas = validCount > 0 ? Math.round((countTuntas / validCount) * 100) : 0;
-                
-                let totalHadir = 0;
-                dataSiswa.forEach(s => {
-                    if (!s.status || s.status === 'Hadir') totalHadir++;
-                });
-                const persentaseKehadiranKelas = dataSiswa.length > 0 ? Math.round((totalHadir / dataSiswa.length) * 100) : 0;
+                const persentaseRemedial = validCount > 0 ? Math.round((countRemedial / validCount) * 100) : 0;
 
                 document.getElementById('stat-rata-rata').innerText = rataRata;
                 document.getElementById('stat-tuntas').innerText = `${countTuntas} Siswa (${persentaseTuntas}%)`;
-                document.getElementById('stat-remedial').innerText = `${countRemedial} Siswa (${100 - persentaseTuntas}%)`;
-                document.getElementById('stat-kehadiran-persen').innerText = `${persentaseKehadiranKelas}% Hadir`;
+                document.getElementById('stat-remedial').innerText = `${countRemedial} Siswa (${persentaseRemedial}%)`;
 
-                renderTabelPerwalian(dataSiswa, dataCatatan, filteredNilai, selectedGuruMapel);
+                renderTabelPerwalian(dataSiswa, dataCatatan, filteredNilai);
 
             } catch (err) {
                 console.error(err);
             }
         }
 
-        function renderTabelPerwalian(dataSiswa, dataCatatan, nilaiMapelList, selectedMapelName) {
+        function renderTabelPerwalian(dataSiswa, dataCatatan, nilaiMapelList) {
             const tbody = document.getElementById('tabel-perwalian-body');
-            if(!tbody) return;
             const catatanMap = {};
             dataCatatan.forEach(c => { catatanMap[c.nis] = c.catatan; });
 
+            // Buat map nilai berdasarkan NIS jika mapel disorot
             const nilaiMap = {};
             if (nilaiMapelList) {
                 nilaiMapelList.forEach(n => { nilaiMap[n.nis] = n.nilai; });
@@ -998,12 +972,7 @@
             tbody.innerHTML = "";
             dataSiswa.forEach((s, idx) => {
                 const existingCatatan = catatanMap[s.nis] || '';
-                const nilaiVal = nilaiMapelList ? (nilaiMap[s.nis] !== undefined ? nilaiMap[s.nis] : '<span class="text-slate-400 italic">-</span>') : '<span class="text-slate-400 italic">Pilih Mapel</span>';
-                
-                let badgeStatus = `<span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full text-[11px] font-bold">Hadir</span>`;
-                if (s.status === 'Sakit') badgeStatus = `<span class="bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full text-[11px] font-bold">Sakit</span>`;
-                else if (s.status === 'Izin') badgeStatus = `<span class="bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full text-[11px] font-bold">Izin</span>`;
-                else if (s.status === 'Alfa') badgeStatus = `<span class="bg-rose-100 text-rose-800 px-2.5 py-1 rounded-full text-[11px] font-bold">Alfa</span>`;
+                const nilaiVal = nilaiMapelList ? (nilaiMap[s.nis] !== undefined ? nilaiMap[s.nis] : '<span class="text-slate-400 italic">Belum Ada</span>') : '<span class="text-slate-400 italic">Pilih Mapel</span>';
 
                 tbody.innerHTML += `
                     <tr class="border-b border-slate-100 hover:bg-slate-50 transition">
@@ -1011,7 +980,7 @@
                         <td class="p-3 font-mono text-slate-600">${s.nis}</td>
                         <td class="p-3 font-semibold text-slate-800">${s.nama}</td>
                         <td class="p-3">${s.kelas}</td>
-                        <td class="p-3 text-center">${badgeStatus}</td>
+                        <td class="p-3 text-center font-bold text-emerald-700">${s.status || 'Hadir'}</td>
                         <td class="p-3 text-center font-bold text-indigo-700">${nilaiVal}</td>
                         <td class="p-3">
                             <input type="text" id="catatan-${s.nis}" value="${existingCatatan}" placeholder="Ketik catatan siswa..." onblur="simpanCatatanSiswa('${s.nis}', '${s.kelas}')" class="w-full border border-slate-300 rounded p-1.5 text-xs focus:ring-2 focus:ring-emerald-500 bg-white">
@@ -1041,7 +1010,7 @@
                     })
                 });
             } catch (err) {
-                console.error("Gagal menyimpan catatan:", err);
+                console.error("Gagal menyimpan catatan otomatis:", err);
             }
         }
 
