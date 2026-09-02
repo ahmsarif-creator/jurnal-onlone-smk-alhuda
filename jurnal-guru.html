@@ -39,23 +39,25 @@
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
 
-    <!-- Header / Navigasi Jurnal -->
+    <!-- Header / Navigasi Atas Diperbaiki -->
     <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3.5 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <img src="logo-alhuda-transparan.png" alt="Logo SMK Al-Huda" class="w-10 h-10 object-contain bg-white rounded-full p-1 shadow" onerror="this.src='https://via.placeholder.com/40'">
-                <div>
-                    <h1 class="font-bold text-base md:text-lg leading-tight tracking-wide">PORTAL GURU & AKADEMIK</h1>
-                    <p class="text-[11px] text-emerald-400" id="info-nama-guru">Memuat profil pengajar...</p>
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-start">
+                <div class="flex items-center space-x-3">
+                    <img src="logo-alhuda-transparan.png" alt="Logo SMK Al-Huda" class="w-10 h-10 object-contain bg-white rounded-full p-1 shadow" onerror="this.src='https://via.placeholder.com/40'">
+                    <div>
+                        <h1 class="font-bold text-sm md:text-base leading-tight tracking-wide">PORTAL GURU & AKADEMIK</h1>
+                        <p class="text-[11px] text-emerald-400 font-medium" id="info-nama-guru">Memuat profil pengajar...</p>
+                    </div>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
-                <!-- Tombol kembali ke Modul Guru -->
-                <a href="modul-guru.html" class="bg-slate-800 hover:bg-slate-700 text-xs font-semibold px-3.5 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
-                    <i class="fa-solid fa-arrow-left"></i> <span>Modul Guru</span>
+            
+            <!-- Tombol Navigasi Atas -->
+            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <a href="modul-guru.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3.5 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5 border border-slate-700">
+                    <i class="fa-solid fa-arrow-left text-emerald-400"></i> <span>Modul Guru</span>
                 </a>
-                <!-- Tombol Keluar mengarah ke index.html -->
-                <button onclick="logoutGuru()" class="bg-rose-600 hover:bg-rose-700 text-xs font-semibold px-3 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
+                <button onclick="logoutGuru()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
                     <i class="fa-solid fa-right-from-bracket"></i> <span>Keluar</span>
                 </button>
             </div>
@@ -63,19 +65,19 @@
     </header>
 
     <!-- Menu Tab Navigasi Halaman Guru -->
-    <nav class="bg-white border-b border-slate-200 shadow-sm sticky top-[65px] z-40">
-        <div class="max-w-7xl mx-auto px-4 flex space-x-4 overflow-x-auto">
+    <nav class="bg-white border-b border-slate-200 shadow-sm sticky top-[65px] sm:top-[61px] z-40">
+        <div class="max-w-7xl mx-auto px-4 flex space-x-2 sm:space-x-4 overflow-x-auto">
             <button onclick="gantiTab('jurnal')" id="tab-btn-jurnal" class="py-3 px-4 border-b-2 font-semibold text-xs sm:text-sm flex items-center gap-2 transition border-indigo-600 text-indigo-600 whitespace-nowrap">
-                <i class="fa-solid fa-book-journal-whills"><span>Jurnal Harian KBM</span></i>
+                <i class="fa-solid fa-book-journal-whills"></i> <span>Jurnal Harian KBM</span>
             </button>
             <button onclick="gantiTab('absensi')" id="tab-btn-absensi" class="py-3 px-4 border-b-2 border-transparent font-medium text-slate-600 hover:text-slate-900 text-xs sm:text-sm flex items-center gap-2 transition whitespace-nowrap">
-                <i class="fa-solid fa-clipboard-user"><span>Absensi Kelas</span></i>
+                <i class="fa-solid fa-clipboard-user"></i> <span>Absensi Kelas</span>
             </button>
             <button onclick="gantiTab('nilai')" id="tab-btn-nilai" class="py-3 px-4 border-b-2 border-transparent font-medium text-slate-600 hover:text-slate-900 text-xs sm:text-sm flex items-center gap-2 transition whitespace-nowrap">
-                <i class="fa-solid fa-star-half-stroke"><span>Daftar Nilai Siswa</span></i>
+                <i class="fa-solid fa-star-half-stroke"></i> <span>Daftar Nilai Siswa</span>
             </button>
             <button onclick="gantiTab('walikelas')" id="tab-btn-walikelas" class="py-3 px-4 border-b-2 border-transparent font-medium text-slate-600 hover:text-slate-900 text-xs sm:text-sm flex items-center gap-2 transition whitespace-nowrap">
-                <i class="fa-solid fa-id-badge"><span>Mode Wali Kelas</span></i>
+                <i class="fa-solid fa-id-badge"></i> <span>Mode Wali Kelas</span>
             </button>
         </div>
     </nav>
@@ -445,17 +447,27 @@
         let cacheDataPresensiKelas = [];
 
         window.addEventListener('DOMContentLoaded', async () => {
-            const sessionData = localStorage.getItem('session_guru');
+            // Memeriksa berbagai varian kunci sesi login yang mungkin digunakan
+            const sessionData = localStorage.getItem('session_guru') || 
+                                localStorage.getItem('guru_login') || 
+                                localStorage.getItem('active_guru');
+
             if (!sessionData) {
-                alert("Sesi login tidak ditemukan. Silakan login terlebih dahulu.");
+                alert("Sesi login tidak ditemukan. Silakan login terlebih dahulu melalui modul guru.");
                 window.location.href = "modul-guru.html";
                 return;
             }
 
-            currentGuru = JSON.parse(sessionData);
+            try {
+                currentGuru = JSON.parse(sessionData);
+            } catch (e) {
+                console.error("Format data sesi rusak:", e);
+                window.location.href = "modul-guru.html";
+                return;
+            }
 
-            document.getElementById('info-nama-guru').innerText = `${currentGuru.nama} (${currentGuru.tugas || 'Guru Pengampu'})`;
-            document.getElementById('salam-jurnal').innerText = `Selamat Datang, ${currentGuru.nama}`;
+            document.getElementById('info-nama-guru').innerText = `${currentGuru.nama || 'Guru'} (${currentGuru.tugas || 'Guru Pengampu'})`;
+            document.getElementById('salam-jurnal').innerText = `Selamat Datang, ${currentGuru.nama || 'Guru'}`;
             document.getElementById('jurnal-mapel').value = currentGuru.tugas || 'Mata Pelajaran Umum';
 
             const todayStr = new Date().toISOString().split('T')[0];
@@ -497,14 +509,12 @@
 
             let daftarKelasUnik = new Set();
 
-            // 1. Masukkan kelas dari data wali kelas jika ada
-            if (currentGuru.wali_kelas) {
+            if (currentGuru && currentGuru.wali_kelas) {
                 currentGuru.wali_kelas.split(',').forEach(k => {
                     if (k.trim()) daftarKelasUnik.add(k.trim());
                 });
             }
 
-            // 2. Ambil daftar kelas dari database presensi agar semua kelas yang diampu muncul di dropdown
             try {
                 const res = await fetch(`${SUPABASE_URL}presensi?select=kelas`, {
                     headers: { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY }
@@ -524,9 +534,9 @@
                 optionsHTML += `<option value="${k}">${k}</option>`;
             });
 
-            selectJurnal.innerHTML = optionsHTML;
-            selectAbsensi.innerHTML = optionsHTML;
-            selectNilai.innerHTML = optionsHTML;
+            if(selectJurnal) selectJurnal.innerHTML = optionsHTML;
+            if(selectAbsensi) selectAbsensi.innerHTML = optionsHTML;
+            if(selectNilai) selectNilai.innerHTML = optionsHTML;
         }
 
         // ================= TAB 1: JURNAL & ABSENSI =================
@@ -825,18 +835,18 @@
             const badgeTotal = document.getElementById('badge-total-perwalian');
             const selectMapel = document.getElementById('filter-mapel-walikelas');
 
-            const kelasPerwalian = currentGuru.wali_kelas ? currentGuru.wali_kelas.split(',')[0].trim() : "";
+            const kelasPerwalian = currentGuru && currentGuru.wali_kelas ? currentGuru.wali_kelas.split(',')[0].trim() : "";
 
             if (!kelasPerwalian) {
-                title.innerText = "Mode Wali Kelas (Tidak Ada Perwalian)";
-                desc.innerText = "Akun Anda terdaftar sebagai guru pengampu, bukan sebagai wali kelas.";
-                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 italic">Anda tidak memiliki kelas perwalian terdaftar.</td></tr>`;
-                badgeTotal.innerText = `Total: 0 Siswa`;
+                if(title) title.innerText = "Mode Wali Kelas (Tidak Ada Perwalian)";
+                if(desc) desc.innerText = "Akun Anda terdaftar sebagai guru pengampu, bukan sebagai wali kelas.";
+                if(tbody) tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 italic">Anda tidak memiliki kelas perwalian terdaftar.</td></tr>`;
+                if(badgeTotal) badgeTotal.innerText = `Total: 0 Siswa`;
                 return;
             }
 
-            title.innerText = `Mode Wali Kelas: ${kelasPerwalian}`;
-            desc.innerText = `Daftar lengkap siswa, persentase kehadiran, rekapitulasi nilai guru lain, serta catatan khusus perwalian.`;
+            if(title) title.innerText = `Mode Wali Kelas: ${kelasPerwalian}`;
+            if(desc) desc.innerText = `Daftar lengkap siswa, persentase kehadiran, rekapitulasi nilai guru lain, serta catatan khusus perwalian.`;
 
             try {
                 const [resSiswa, resCatatan, resNilaiAll, resJurnalAll] = await Promise.all([
@@ -860,17 +870,19 @@
                 cacheDataPresensiKelas = dataSiswa; 
                 const dataJurnalAll = await resJurnalAll.json();
 
-                badgeTotal.innerText = `Total: ${dataSiswa.length} Siswa`;
+                if(badgeTotal) badgeTotal.innerText = `Total: ${dataSiswa.length} Siswa`;
 
                 const mapelSet = new Set();
                 cacheDataNilaiKelas.forEach(n => {
                     if (n.guru_pengampu) mapelSet.add(n.guru_pengampu);
                 });
 
-                selectMapel.innerHTML = `<option value="">-- Semua Mata Pelajaran --</option>`;
-                mapelSet.forEach(m => {
-                    selectMapel.innerHTML += `<option value="${m}">${m}</option>`;
-                });
+                if(selectMapel) {
+                    selectMapel.innerHTML = `<option value="">-- Semua Mata Pelajaran --</option>`;
+                    mapelSet.forEach(m => {
+                        selectMapel.innerHTML += `<option value="${m}">${m}</option>`;
+                    });
+                }
 
                 renderJurnalWaliKelas(dataJurnalAll);
                 renderTabelPerwalian(dataSiswa, dataCatatan, null, null);
@@ -882,6 +894,7 @@
 
         function renderJurnalWaliKelas(jurnalList) {
             const tbody = document.getElementById('tabel-jurnal-walikelas-body');
+            if (!tbody) return;
             if (jurnalList.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400 italic">Belum ada jurnal pengajar lain untuk kelas ini.</td></tr>`;
                 return;
@@ -903,22 +916,22 @@
 
         async function muatRekapMapelWaliKelas() {
             const selectedGuruMapel = document.getElementById('filter-mapel-walikelas').value;
-            const kelasPerwalian = currentGuru.wali_kelas ? currentGuru.wali_kelas.split(',')[0].trim() : "";
+            const kelasPerwalian = currentGuru && currentGuru.wali_kelas ? currentGuru.wali_kelas.split(',')[0].trim() : "";
             const thNilai = document.getElementById('th-label-nilai-mapel');
             const thKehadiran = document.getElementById('th-label-kehadiran-mapel');
             const boxStat = document.getElementById('box-statistik-mapel');
 
             if (!selectedGuruMapel) {
-                thNilai.innerText = "Nilai Mapel Terpilih";
-                thKehadiran.innerText = "Kehadiran Mapel";
-                boxStat.classList.add('hidden');
+                if(thNilai) thNilai.innerText = "Nilai Mapel Terpilih";
+                if(thKehadiran) thKehadiran.innerText = "Kehadiran Mapel";
+                if(boxStat) boxStat.classList.add('hidden');
                 muatDataWaliKelas();
                 return;
             }
 
-            thNilai.innerText = `Nilai (${selectedGuruMapel})`;
-            thKehadiran.innerText = `Kehadiran (${selectedGuruMapel})`;
-            boxStat.classList.remove('hidden');
+            if(thNilai) thNilai.innerText = `Nilai (${selectedGuruMapel})`;
+            if(thKehadiran) thKehadiran.innerText = `Kehadiran (${selectedGuruMapel})`;
+            if(boxStat) boxStat.classList.remove('hidden');
 
             try {
                 const [resSiswa, resCatatan] = await Promise.all([
@@ -970,6 +983,7 @@
 
         function renderTabelPerwalian(dataSiswa, dataCatatan, nilaiMapelList, selectedMapelName) {
             const tbody = document.getElementById('tabel-perwalian-body');
+            if (!tbody) return;
             const catatanMap = {};
             dataCatatan.forEach(c => { catatanMap[c.nis] = c.catatan; });
 
@@ -1005,7 +1019,9 @@
         }
 
         async function simpanCatatanSiswa(nis, kelas) {
-            const inputVal = document.getElementById(`catatan-${nis}`).value.trim();
+            const inputEl = document.getElementById(`catatan-${nis}`);
+            if(!inputEl) return;
+            const inputVal = inputEl.value.trim();
 
             try {
                 await fetch(`${SUPABASE_URL}catatan_walikelas`, {
@@ -1031,7 +1047,9 @@
         function logoutGuru() {
             if (confirm("Apakah Anda ingin keluar dari sesi?")) {
                 localStorage.removeItem('session_guru');
-                window.location.href = "index.html"; // Mengarahkan ke halaman utama/index.html
+                localStorage.removeItem('guru_login');
+                localStorage.removeItem('active_guru');
+                window.location.href = "index.html";
             }
         }
     </script>
